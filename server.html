@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration — OrionBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple: #A855F7;
+            --purple-dark: #7C3AED;
+            --purple-light: #C084FC;
+            --bg: #080810;
+            --bg-card: #0f0f1a;
+            --bg-card2: #13131f;
+            --text: #ffffff;
+            --text-muted: #8b8fa8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8, 8, 16, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-image: url('assets/logo.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .nav-logo span {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--purple);
+        }
+
+        .nav-username {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--purple);
+            color: var(--purple-light);
+        }
+
+        /* LAYOUT */
+        .layout {
+            display: flex;
+            padding-top: 70px;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            min-height: calc(100vh - 70px);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 32px 16px;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .server-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 24px;
+            background: var(--bg-card2);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .server-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .server-icon-placeholder {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--purple-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .server-name {
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 0 12px;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(168, 85, 247, 0.08);
+            color: var(--text);
+        }
+
+        .sidebar-item.active {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--purple-light);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .sidebar-item-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .back-btn:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .module-panel {
+            display: none;
+        }
+
+        .module-panel.active {
+            display: block;
+        }
+
+        .module-header {
+            margin-bottom: 32px;
+        }
+
+        .module-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--purple-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .module-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* CARDS */
+        .config-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        .config-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-select, .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-card2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .form-select:focus, .form-input:focus, .form-textarea:focus {
+            border-color: var(--purple);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-select option {
+            background: var(--bg-card2);
+        }
+
+        /* TOGGLE */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .toggle-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-card2);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: var(--purple);
+        }
+
+        .toggle input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+            background: var(--purple);
+        }
+
+        .save-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        /* LOADING */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
+            flex-direction: column;
+            gap: 16px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--purple);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* WELCOME */
+        #panel-home .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .module-card:hover {
+            border-color: var(--purple);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.15);
+        }
+
+        .module-card-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .module-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .module-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-dot.on { background: #22c55e; }
+        .status-dot.off { background: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/index.html" class="nav-logo">
+            <div class="nav-logo-img"></div>
+            <span>OrionBot</span>
+        </a>
+        <div class="nav-right">
+            <img id="nav-avatar" class="nav-avatar" src="" alt="">
+            <span id="nav-username" class="nav-username"></span>
+            <a href="http://localhost:3000/auth/logout" class="btn btn-outline">Déconnexion</a>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/dashboard.html" class="back-btn">← Retour</a>
+            <div class="server-info">
+                <div id="sidebar-icon" class="server-icon-placeholder">?</div>
+                <span id="sidebar-name" class="server-name">Chargement...</span>
+            </div>
+
+            <div class="sidebar-label">Général</div>
+            <button class="sidebar-item active" onclick="showPanel('home')">
+                <span class="sidebar-item-icon">🏠</span> Accueil
+            </button>
+
+            <div class="sidebar-label">Modules</div>
+            <button class="sidebar-item" onclick="showPanel('welcome')">
+                <span class="sidebar-item-icon">👋</span> Bienvenue & Départ
+            </button>
+            <button class="sidebar-item" onclick="showPanel('moderation')">
+                <span class="sidebar-item-icon">🛡️</span> Modération
+            </button>
+            <button class="sidebar-item" onclick="showPanel('autorole')">
+                <span class="sidebar-item-icon">🎭</span> Rôle automatique
+            </button>
+            <button class="sidebar-item" onclick="showPanel('tickets')">
+                <span class="sidebar-item-icon">🎫</span> Tickets
+            </button>
+            <button class="sidebar-item" onclick="showPanel('tempvoice')">
+                <span class="sidebar-item-icon">🔊</span> Salons vocaux temp.
+            </button>
+            <button class="sidebar-item" onclick="showPanel('stats')">
+                <span class="sidebar-item-icon">📊</span> Stats
+            </button>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- HOME -->
+            <div id="panel-home" class="module-panel active">
+                <div class="module-header">
+                    <h1 id="server-title">Chargement...</h1>
+                    <p>Sélectionne un module pour le configurer.</p>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card" onclick="showPanel('welcome')">
+                        <div class="module-card-icon">👋</div>
+                        <h3>Bienvenue & Départ</h3>
+                        <p><span class="status-dot off"></span>Messages d'arrivée et départ</p>
+                    </div>
+                    <div class="module-card" onclick="showPanel('moderation')">
+                        <div class="module-card-icon">🛡️</div>
+                        <h3>Modération</h3>
+                        <p><span class="status-dot off"></span>Logs et outils de modération</p>
+                    </div>
+                    <div class="module-card" onclick="showPanel('autorole')">
+                        <div class="module-card-icon">🎭</div>
+                        <h3>Rôle automatique</h3>
+                        <p><span class="status-dot off"></span>Rôle attribué à l'arrivée</p>
+                    </div>
+                    <div class="module-card" onclick="showPanel('tickets')">
+                        <div class="module-card-icon">🎫</div>
+                        <h3>Tickets</h3>
+                        <p><span class="status-dot off"></span>Système de support</p>
+                    </div>
+                    <div class="module-card" onclick="showPanel('tempvoice')">
+                        <div class="module-card-icon">🔊</div>
+                        <h3>Salons vocaux temp.</h3>
+                        <p><span class="status-dot off"></span>Création automatique</p>
+                    </div>
+                    <div class="module-card" onclick="showPanel('stats')">
+                        <div class="module-card-icon">📊</div>
+                        <h3>Stats</h3>
+                        <p><span class="status-dot off"></span>Compteurs de membres</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BIENVENUE -->
+            <div id="panel-welcome" class="module-panel">
+                <div class="module-header">
+                    <h1>👋 Bienvenue & Départ</h1>
+                    <p>Configure les messages de bienvenue et d'au revoir.</p>
+                </div>
+                <div class="config-card">
+                    <h3>⚙️ Paramètres</h3>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Message de bienvenue</h4>
+                            <p>Envoie un message quand un membre arrive</p>
+                        </div>
+                        <label class="toggle"><input type="checkbox" id="welcome-enabled"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Message de départ</h4>
+                            <p>Envoie un message quand un membre part</p>
+                        </div>
+                        <label class="toggle"><input type="checkbox" id="leave-enabled"><span class="toggle-slider"></span></label>
+                    </div>
+                </div>
+                <div class="config-card">
+                    <h3>📨 Configuration</h3>
+                    <div class="form-group">
+                        <label class="form-label">Salon de bienvenue</label>
+                        <select class="form-select" id="welcome-channel">
+                            <option value="">Sélectionne un salon...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message de bienvenue</label>
+                        <textarea class="form-textarea" id="welcome-message" placeholder="Bienvenue {user} sur {server} !"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salon de départ</label>
+                        <select class="form-select" id="leave-channel">
+                            <option value="">Sélectionne un salon...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message de départ</label>
+                        <textarea class="form-textarea" id="leave-message" placeholder="Au revoir {user} !"></textarea>
+                    </div>
+                </div>
+                <div class="save-bar">
+                    <button class="btn btn-primary" onclick="saveConfig('welcome')">💾 Sauvegarder</button>
+                </div>
+            </div>
+
+            <!-- MODERATION -->
+            <div id="panel-moderation" class="module-panel">
+                <div class="module-header">
+                    <h1>🛡️ Modération</h1>
+                    <p>Configure les logs de modération.</p>
+                </div>
+                <div class="config-card">
+                    <h3>📋 Logs</h3>
+                    <div class="form-group">
+                        <label class="form-label">Salon des logs</label>
+                        <select class="form-select" id="mod-log-channel">
+                            <option value="">Sélectionne un salon...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="save-bar">
+                    <button class="btn btn-primary" onclick="saveConfig('moderation')">💾 Sauvegarder</button>
+                </div>
+            </div>
+
+            <!-- AUTOROLE -->
+            <div id="panel-autorole" class="module-panel">
+                <div class="module-header">
+                    <h1>🎭 Rôle automatique</h1>
+                    <p>Attribue automatiquement un rôle à l'arrivée.</p>
+                </div>
+                <div class="config-card">
+                    <h3>⚙️ Paramètres</h3>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Activer le rôle automatique</h4>
+                            <p>Attribue un rôle dès qu'un membre rejoint</p>
+                        </div>
+                        <label class="toggle"><input type="checkbox" id="autorole-enabled"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="form-group" style="margin-top:20px;">
+                        <label class="form-label">Rôle à attribuer</label>
+                        <select class="form-select" id="autorole-role">
+                            <option value="">Sélectionne un rôle...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="save-bar">
+                    <button class="btn btn-primary" onclick="saveConfig('autorole')">💾 Sauvegarder</button>
+                </div>
+            </div>
+
+            <!-- TICKETS -->
+            <div id="panel-tickets" class="module-panel">
+                <div class="module-header">
+                    <h1>🎫 Tickets</h1>
+                    <p>Configure le système de tickets.</p>
+                </div>
+                <div class="config-card">
+                    <h3>⚙️ Paramètres</h3>
+                    <div class="form-group">
+                        <label class="form-label">Salon des tickets</label>
+                        <select class="form-select" id="ticket-channel">
+                            <option value="">Sélectionne un salon...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Catégorie des tickets</label>
+                        <select class="form-select" id="ticket-category">
+                            <option value="">Sélectionne une catégorie...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rôle support</label>
+                        <select class="form-select" id="ticket-role">
+                            <option value="">Sélectionne un rôle...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="save-bar">
+                    <button class="btn btn-primary" onclick="saveConfig('tickets')">💾 Sauvegarder</button>
+                </div>
+            </div>
+
+            <!-- TEMPVOICE -->
+            <div id="panel-tempvoice" class="module-panel">
+                <div class="module-header">
+                    <h1>🔊 Salons vocaux temporaires</h1>
+                    <p>Configure la création automatique de salons vocaux.</p>
+                </div>
+                <div class="config-card">
+                    <h3>⚙️ Paramètres</h3>
+                    <div class="form-group">
+                        <label class="form-label">Salon de création</label>
+                        <select class="form-select" id="tempvoice-channel">
+                            <option value="">Sélectionne un salon vocal...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Catégorie</label>
+                        <select class="form-select" id="tempvoice-category">
+                            <option value="">Sélectionne une catégorie...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="save-bar">
+                    <button class="btn btn-primary" onclick="saveConfig('tempvoice')">💾 Sauvegarder</button>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div id="panel-stats" class="module-panel">
+                <div class="module-header">
+                    <h1>📊 Stats</h1>
+                    <p>Configure les compteurs de membres.</p>
+                </div>
+                <div class="config-card">
+                    <h3>⚙️ Paramètres</h3>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h4>Activer les stats</h4>
+                            <p>Affiche des compteurs dans les salons vocaux</p>
+                        </div>
+                        <label class="toggle"><input type="checkbox" id="stats-enabled"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="form-group" style="margin-top:20px;">
+                        <label class="form-label">Catégorie des stats</label>
+                        <select class="form-select" id="stats-category">
+                            <option value="">Sélectionne une catégorie...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="save-bar">
+                    <button class="btn btn-primary" onclick="saveConfig('stats')">💾 Sauvegarder</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const BACKEND = 'http://localhost:3000';
+        const params = new URLSearchParams(window.location.search);
+        const guildId = params.get('id');
+
+        if (!guildId) window.location.href = '/dashboard.html';
+
+        let guildData = null;
+
+        // Charge l'utilisateur
+        fetch(BACKEND + '/api/me', { credentials: 'include' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) return window.location.href = '/dashboard.html';
+                const user = data.user;
+                const avatar = user.avatar
+                    ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png'
+                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+                document.getElementById('nav-avatar').src = avatar;
+                document.getElementById('nav-username').textContent = user.username;
+
+                // Trouve le serveur
+                const guild = data.guilds ? data.guilds.find(g => g.id === guildId) : null;
+                if (guild) {
+                    document.getElementById('server-title').textContent = guild.name;
+                    document.getElementById('sidebar-name').textContent = guild.name;
+                    if (guild.icon) {
+                        const img = document.createElement('img');
+                        img.src = 'https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.png';
+                        img.className = 'server-icon';
+                        document.getElementById('sidebar-icon').replaceWith(img);
+                    } else {
+                        document.getElementById('sidebar-icon').textContent = guild.name.charAt(0);
+                    }
+                }
+            });
+
+        // Charge les salons et rôles
+        fetch(BACKEND + '/api/guild/' + guildId + '/channels', { credentials: 'include' })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.channels) return;
+
+                const textChannels = data.channels.filter(c => c.type === 0);
+                const voiceChannels = data.channels.filter(c => c.type === 2);
+                const categories = data.channels.filter(c => c.type === 4);
+                const roles = data.roles || [];
+
+                // Remplis les selects de salons textuels
+                ['welcome-channel', 'leave-channel', 'mod-log-channel', 'ticket-channel'].forEach(id => {
+                    const sel = document.getElementById(id);
+                    textChannels.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = '#' + c.name;
+                        sel.appendChild(opt);
+                    });
+                });
+
+                // Salons vocaux
+                ['tempvoice-channel'].forEach(id => {
+                    const sel = document.getElementById(id);
+                    voiceChannels.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = '🔊 ' + c.name;
+                        sel.appendChild(opt);
+                    });
+                });
+
+                // Catégories
+                ['ticket-category', 'tempvoice-category', 'stats-category'].forEach(id => {
+                    const sel = document.getElementById(id);
+                    categories.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = '📁 ' + c.name;
+                        sel.appendChild(opt);
+                    });
+                });
+
+                // Rôles
+                ['autorole-role', 'ticket-role'].forEach(id => {
+                    const sel = document.getElementById(id);
+                    roles.filter(r => r.name !== '@everyone').forEach(r => {
+                        const opt = document.createElement('option');
+                        opt.value = r.id;
+                        opt.textContent = '@' + r.name;
+                        sel.appendChild(opt);
+                    });
+                });
+            });
+
+        // Navigation sidebar
+        function showPanel(name) {
+            document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('panel-' + name).classList.add('active');
+            event.currentTarget && event.currentTarget.classList.add('active');
+        }
+
+        // Sauvegarde
+        async function saveConfig(module) {
+            let data = {};
+
+            if (module === 'welcome') {
+                data = {
+                    'welcome.enabled': document.getElementById('welcome-enabled').checked,
+                    'welcome.channelId': document.getElementById('welcome-channel').value,
+                    'welcome.message': document.getElementById('welcome-message').value,
+                    'goodbye.enabled': document.getElementById('leave-enabled').checked,
+                    'goodbye.channelId': document.getElementById('leave-channel').value,
+                    'goodbye.message': document.getElementById('leave-message').value
+                };
+            } else if (module === 'moderation') {
+                data = { 'moderation.logChannelId': document.getElementById('mod-log-channel').value };
+            } else if (module === 'autorole') {
+                data = {
+                    'autorole.enabled': document.getElementById('autorole-enabled').checked,
+                    'autorole.roles': [document.getElementById('autorole-role').value]
+                };
+            } else if (module === 'tickets') {
+                data = {
+                    'tickets.channelId': document.getElementById('ticket-channel').value,
+                    'tickets.categoryId': document.getElementById('ticket-category').value,
+                    'tickets.roleId': document.getElementById('ticket-role').value
+                };
+            } else if (module === 'tempvoice') {
+                data = {
+                    'tempvoice.enabled': true,
+                    'tempvoice.createChannelId': document.getElementById('tempvoice-channel').value,
+                    'tempvoice.categoryId': document.getElementById('tempvoice-category').value
+                };
+            } else if (module === 'stats') {
+                data = {
+                    'stats.enabled': document.getElementById('stats-enabled').checked,
+                    'stats.categoryId': document.getElementById('stats-category').value
+                };
+            }
+
+            try {
+                const res = await fetch(BACKEND + '/api/guild/' + guildId + '/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) alert('✅ Configuration sauvegardée !');
+                else alert('❌ Erreur lors de la sauvegarde');
+            } catch (e) {
+                alert('❌ Erreur de connexion au serveur');
+            }
+        }
+
+        // Charge la config existante
+        fetch(BACKEND + '/api/guild/' + guildId + '/config', { credentials: 'include' })
+            .then(r => r.json())
+            .then(config => {
+                if (config.welcome) {
+                    document.getElementById('welcome-enabled').checked = config.welcome.enabled || false;
+                    document.getElementById('welcome-channel').value = config.welcome.channelId || '';
+                    document.getElementById('welcome-message').value = config.welcome.message || '';
+                }
+                if (config.goodbye) {
+                    document.getElementById('leave-enabled').checked = config.goodbye.enabled || false;
+                    document.getElementById('leave-channel').value = config.goodbye.channelId || '';
+                    document.getElementById('leave-message').value = config.goodbye.message || '';
+                }
+                if (config.moderation) {
+                    document.getElementById('mod-log-channel').value = config.moderation.logChannelId || '';
+                }
+                if (config.autorole) {
+                    document.getElementById('autorole-enabled').checked = config.autorole.enabled || false;
+                    if (config.autorole.roles && config.autorole.roles[0]) {
+                        document.getElementById('autorole-role').value = config.autorole.roles[0];
+                    }
+                }
+                if (config.tempvoice) {
+                    document.getElementById('tempvoice-channel').value = config.tempvoice.createChannelId || '';
+                    document.getElementById('tempvoice-category').value = config.tempvoice.categoryId || '';
+                }
+                if (config.stats) {
+                    document.getElementById('stats-enabled').checked = config.stats.enabled || false;
+                    document.getElementById('stats-category').value = config.stats.categoryId || '';
+                }
+        });
+    </script>
+
+</body>
+</html>

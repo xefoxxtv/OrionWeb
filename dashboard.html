@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — OrionBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple: #A855F7;
+            --purple-dark: #7C3AED;
+            --purple-light: #C084FC;
+            --bg: #080810;
+            --bg-card: #0f0f1a;
+            --bg-card2: #13131f;
+            --text: #ffffff;
+            --text-muted: #8b8fa8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8, 8, 16, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-image: url('assets/logo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .nav-logo span {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--purple);
+        }
+
+        .nav-username {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--purple);
+            color: var(--purple-light);
+            transform: translateY(-2px);
+        }
+
+        /* MAIN */
+        main {
+            padding: 120px 40px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff, var(--purple-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+        }
+
+        /* GUILDS */
+        .guilds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .guild-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guild-card.active:hover {
+            border-color: var(--purple);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.2);
+        }
+
+        .guild-card.inactive {
+            opacity: 0.5;
+            filter: grayscale(80%);
+        }
+
+        .guild-card.inactive:hover {
+            opacity: 0.7;
+            transform: translateY(-4px);
+            border-color: #555;
+        }
+
+        .guild-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border);
+        }
+
+        .guild-card.active .guild-icon {
+            border-color: var(--purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .guild-icon-placeholder {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--bg-card2);
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        .guild-name {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .guild-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .guild-card.active .guild-badge {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--purple-light);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .guild-card.inactive .guild-badge {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 80px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--purple);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/index.html" class="nav-logo">
+            <div class="nav-logo-img"></div>
+            <span>OrionBot</span>
+        </a>
+        <div class="nav-user">
+            <div class="nav-user-info">
+                <img id="nav-avatar" class="nav-avatar" src="" alt="">
+                <span id="nav-username" class="nav-username"></span>
+            </div>
+            <a href="http://localhost:3000/auth/logout" class="btn btn-outline">Déconnexion</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1 class="page-title">Sélectionne un serveur</h1>
+        <p class="page-subtitle">Choisis un serveur pour configurer OrionBot dessus.</p>
+
+        <div id="guilds-container" class="guilds-grid">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Chargement des serveurs...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const BACKEND = 'http://localhost:3000';
+
+        // Récupère l'utilisateur connecté
+        fetch(BACKEND + '/api/me', { credentials: 'include' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) return window.location.href = '/index.html';
+
+                const user = data.user;
+                const avatar = user.avatar
+                    ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png'
+                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+                document.getElementById('nav-avatar').src = avatar;
+                document.getElementById('nav-username').textContent = user.username;
+            });
+
+        // Récupère les serveurs
+        fetch(BACKEND + '/api/guilds', { credentials: 'include' })
+            .then(res => res.json())
+            .then(guilds => {
+                const container = document.getElementById('guilds-container');
+                container.innerHTML = '';
+
+                if (guilds.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-muted)">Aucun serveur trouvé.</p>';
+                    return;
+                }
+
+                // Trie : bot présent en premier
+                guilds.sort((a, b) => b.botPresent - a.botPresent);
+
+                guilds.forEach(guild => {
+                    const card = document.createElement('div');
+                    card.className = 'guild-card ' + (guild.botPresent ? 'active' : 'inactive');
+
+                    const iconHtml = guild.icon
+                        ? '<img class="guild-icon" src="' + guild.icon + '" alt="' + guild.name + '">'
+                        : '<div class="guild-icon-placeholder">' + guild.name.charAt(0).toUpperCase() + '</div>';
+
+                    const badgeHtml = guild.botPresent
+                        ? '<span class="guild-badge">✅ Configuré</span>'
+                        : '<span class="guild-badge">➕ Ajouter le bot</span>';
+
+                    card.innerHTML = iconHtml + '<span class="guild-name">' + guild.name + '</span>' + badgeHtml;
+
+                    card.addEventListener('click', () => {
+                        if (guild.botPresent) {
+                            window.location.href = '/server.html?id=' + guild.id;
+                        } else {
+                            window.location.href = 'https://discord.com/oauth2/authorize?client_id=1486093657710006494&scope=bot&permissions=8&guild_id=' + guild.id;
+                        }
+                    });
+
+                    container.appendChild(card);
+                });
+            });
+    </script>
+
+</body>
+</html>

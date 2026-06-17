@@ -23,7 +23,7 @@ const Config = mongoose.models.Config || mongoose.model('Config', configSchema);
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: ['https://orionbot-backend-hxyh.onrender.com', 'http://localhost:3000'], credentials: true }));
 app.use(express.json());
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -81,7 +81,7 @@ app.get('/auth/callback', async (req, res) => {
         req.session.guilds = guildsRes.data;
         req.session.access_token = access_token;
 
-        res.redirect('http://localhost:3000/dashboard.html');
+        res.redirect('https://orionbot-backend-hxyh.onrender.com/dashboard.html');
     } catch (e) {
         console.error(e);
         res.redirect('/');
@@ -119,7 +119,7 @@ app.get('/api/guilds', (req, res) => {
 // Route logout
 app.get('/auth/logout', (req, res) => {
     req.session.destroy();
-    res.redirect('http://localhost:3000/');
+    res.redirect('https://orionbot-backend-hxyh.onrender.com/');
 });
 
 // Pages

@@ -12,7 +12,13 @@ client.once('ready', () => {
     console.log('Bot connecté pour le dashboard — ' + guilds.length + ' serveurs');
 });
 
-client.login(process.env.BOT_TOKEN);
+client.on('error', (error) => {
+    console.error('Erreur bot Discord:', error);
+});
+
+client.login(process.env.BOT_TOKEN).catch(err => {
+    console.error('Impossible de connecter le bot:', err.message);
+});
 
 module.exports = {
     getGuilds: () => guilds,

@@ -95,22 +95,27 @@ app.get('/api/me', (req, res) => {
 });
 
 // Route pour récupérer les serveurs
-app.get('/api/guilds', (req, res) => {
+app.get('/api/guilds', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-
-    const botGuilds = require('./botGuilds.js');
-
-    if (!botGuilds.isReady()) {
-        return res.status(503).json({ error: 'Bot pas encore prêt, réessaie dans quelques secondes' });
-    }
 
     const adminGuilds = req.session.guilds.filter(g => (g.permissions & 0x8) === 0x8);
 
-    const guilds = adminGuilds.map(g => ({
+    const guildsWithBot = await Promise.all(adminGuilds.map(async (g) => {
+        try {
+            await axios.get('https://discord.com/api/guilds/' + g.id, {
+                headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
+            });
+            return { ...g, botPresent: true };
+        } catch {
+            return { ...g, botPresent: false };
+        }
+    }));
+
+    const guilds = guildsWithBot.map(g => ({
         id: g.id,
         name: g.name,
         icon: g.icon ? 'https://cdn.discordapp.com/icons/' + g.id + '/' + g.icon + '.png' : null,
-        botPresent: botGuilds.getGuilds().includes(g.id)
+        botPresent: g.botPresent
     }));
 
     res.json(guilds);
@@ -134,14 +139,20 @@ app.get('/dashboard.html', (req, res) => {
 app.get('/api/guild/:guildId/channels', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
 
-    const botGuilds = require('./botGuilds.js');
-    const guild = botGuilds.getClient().guilds.cache.get(req.params.guildId);
-    if (!guild) return res.status(404).json({ error: 'Serveur introuvable' });
+    try {
+        const [channelsRes, rolesRes] = await Promise.all([
+            axios.get('https://discord.com/api/guilds/' + req.params.guildId + '/channels', {
+                headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
+            }),
+            axios.get('https://discord.com/api/guilds/' + req.params.guildId + '/roles', {
+                headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
+            })
+        ]);
 
-    const channels = guild.channels.cache.map(c => ({ id: c.id, name: c.name, type: c.type }));
-    const roles = guild.roles.cache.map(r => ({ id: r.id, name: r.name }));
-
-    res.json({ channels, roles });
+        res.json({ channels: channelsRes.data, roles: rolesRes.data });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur API Discord' });
+    }
 });
 
 // Récupère la config d'un serveur

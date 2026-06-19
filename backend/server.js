@@ -82,6 +82,7 @@ app.get('/auth/callback', async (req, res) => {
         req.session.user = userRes.data;
         req.session.guilds = guildsRes.data;
         req.session.access_token = access_token;
+        console.log('Session sauvegardée pour:', req.session.user.username);
 
         await req.session.save();
 

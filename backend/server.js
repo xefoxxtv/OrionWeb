@@ -5,22 +5,11 @@ const MongoStore = require('connect-mongo').default || require('connect-mongo');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
-const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI).then(() => console.log('✅ Dashboard connecté à MongoDB'));
 
-const configSchema = new mongoose.Schema({
-    guildId: { type: String, required: true, unique: true },
-    welcome: { enabled: Boolean, channelId: String, message: String, couleur: String },
-    goodbye: { enabled: Boolean, channelId: String, message: String, couleur: String },
-    moderation: { logChannelId: String },
-    autorole: { enabled: Boolean, roles: [String] },
-    tickets: { titre: String, description: String, categories: mongoose.Schema.Types.Mixed, askReason: Boolean, askCloseReason: Boolean },
-    tempvoice: { enabled: Boolean, createChannelId: String, categoryId: String },
-    stats: { enabled: Boolean, categoryId: String, channels: mongoose.Schema.Types.Mixed }
-}, { strict: false });
-
-const Config = mongoose.models.Config || mongoose.model('Config', configSchema);
+const { connectDB, getConfig, saveConfig } = require('./database.js');
+connectDB();
 
 const app = express();
 
@@ -176,18 +165,13 @@ app.get('/api/guild/:guildId/channels', async (req, res) => {
 // Config
 app.get('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-    let config = await Config.findOne({ guildId: req.params.guildId });
-    if (!config) config = new Config({ guildId: req.params.guildId });
+    const config = await getConfig(req.params.guildId);
     res.json(config);
 });
 
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-    await Config.findOneAndUpdate(
-        { guildId: req.params.guildId },
-        { $set: req.body },
-        { upsert: true, returnDocument: 'after' }
-    );
+    await saveConfig(req.params.guildId, req.body);
     res.json({ success: true });
 });
 

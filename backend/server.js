@@ -24,6 +24,7 @@ const Config = mongoose.models.Config || mongoose.model('Config', configSchema);
 
 const app = express();
 
+app.set('trust proxy', 1);
 app.use(cors({ origin: ['https://orionbot-backend-hxyh.onrender.com', 'http://localhost:3000'], credentials: true }));
 app.use(express.json());
 app.use(session({

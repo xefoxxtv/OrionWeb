@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
@@ -29,6 +30,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     cookie: {
         secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -39,7 +41,7 @@ app.use(session({
 // Sert les fichiers statiques du frontend
 app.use(express.static(path.join(__dirname, '../')));
 
-// Route login — redirige vers Discord
+// Route login
 app.get('/auth/login', (req, res) => {
     const params = new URLSearchParams({
         client_id: process.env.DISCORD_CLIENT_ID,
@@ -50,7 +52,7 @@ app.get('/auth/login', (req, res) => {
     res.redirect('https://discord.com/oauth2/authorize?' + params.toString());
 });
 
-// Route callback — Discord renvoie le code ici
+// Route callback
 app.get('/auth/callback', async (req, res) => {
     const code = req.query.code;
     if (!code) return res.redirect('/');
@@ -81,6 +83,8 @@ app.get('/auth/callback', async (req, res) => {
         req.session.guilds = guildsRes.data;
         req.session.access_token = access_token;
 
+        await req.session.save();
+
         res.redirect('https://orionbot-backend-hxyh.onrender.com/dashboard.html');
     } catch (e) {
         console.error(e);
@@ -88,13 +92,13 @@ app.get('/auth/callback', async (req, res) => {
     }
 });
 
-// Route pour récupérer l'utilisateur connecté
+// Route me
 app.get('/api/me', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     res.json({ user: req.session.user, guilds: req.session.guilds });
 });
 
-// Route pour récupérer les serveurs
+// Route guilds
 app.get('/api/guilds', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
 
@@ -136,6 +140,11 @@ app.get('/dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../dashboard.html'));
 });
 
+app.get('/server.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../server.html'));
+});
+
+// Channels et rôles
 app.get('/api/guild/:guildId/channels', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
 
@@ -155,7 +164,7 @@ app.get('/api/guild/:guildId/channels', async (req, res) => {
     }
 });
 
-// Récupère la config d'un serveur
+// Config
 app.get('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     let config = await Config.findOne({ guildId: req.params.guildId });
@@ -163,7 +172,6 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
     res.json(config);
 });
 
-// Sauvegarde la config d'un module
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     await Config.findOneAndUpdate(

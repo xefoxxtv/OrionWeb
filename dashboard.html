@@ -268,7 +268,7 @@
                 <img id="nav-avatar" class="nav-avatar" src="" alt="">
                 <span id="nav-username" class="nav-username"></span>
             </div>
-            <a href="http://localhost:3000/auth/logout" class="btn btn-outline">Déconnexion</a>
+            <a href="/auth/logout" class="btn btn-outline">Déconnexion</a>
         </div>
     </nav>
 
@@ -285,7 +285,7 @@
     </main>
 
     <script>
-        const BACKEND = 'https://orionbot-backend-hxyh.onrender.com';
+        const BACKEND = '';
 
         // Récupère l'utilisateur connecté
         fetch(BACKEND + '/api/me', { credentials: 'include' })

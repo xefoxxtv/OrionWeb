@@ -99,6 +99,13 @@ app.get('/api/me', (req, res) => {
     res.json({ user: req.session.user, guilds: req.session.guilds });
 });
 
+app.get('/api/me', (req, res) => {
+    console.log('Session ID:', req.sessionID);
+    console.log('Session user:', req.session.user ? req.session.user.username : 'non connecté');
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    res.json({ user: req.session.user, guilds: req.session.guilds });
+});
+
 // Route guilds
 app.get('/api/guilds', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });

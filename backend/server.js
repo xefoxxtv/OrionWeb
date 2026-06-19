@@ -5,6 +5,7 @@ const MongoStore = require('connect-mongo').default || require('connect-mongo');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
+const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI).then(() => console.log('✅ Dashboard connecté à MongoDB'));
 

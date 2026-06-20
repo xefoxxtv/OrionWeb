@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI).then(() => console.log('✅ Dashboard connecté à MongoDB'));
 
-const { connectDB, getConfig, saveConfig } = require('./database.js');
+const { connectDB, getConfig } = require('./database.js');
 connectDB();
 
 const app = express();
@@ -29,10 +29,8 @@ app.use(session({
     }
 }));
 
-// Sert les fichiers statiques du frontend
 app.use(express.static(path.join(__dirname, '../')));
 
-// Route login
 app.get('/auth/login', (req, res) => {
     const params = new URLSearchParams({
         client_id: process.env.DISCORD_CLIENT_ID,
@@ -43,7 +41,6 @@ app.get('/auth/login', (req, res) => {
     res.redirect('https://discord.com/oauth2/authorize?' + params.toString());
 });
 
-// Route callback
 app.get('/auth/callback', async (req, res) => {
     const code = req.query.code;
     if (!code) return res.redirect('/');
@@ -73,10 +70,8 @@ app.get('/auth/callback', async (req, res) => {
         req.session.user = userRes.data;
         req.session.guilds = guildsRes.data;
         req.session.access_token = access_token;
-        console.log('Session sauvegardée pour:', req.session.user.username);
 
         await req.session.save();
-
         res.redirect('https://orionbot-backend-hxyh.onrender.com/dashboard.html');
     } catch (e) {
         console.error(e);
@@ -84,20 +79,11 @@ app.get('/auth/callback', async (req, res) => {
     }
 });
 
-// Route me
 app.get('/api/me', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     res.json({ user: req.session.user, guilds: req.session.guilds });
 });
 
-app.get('/api/me', (req, res) => {
-    console.log('Session ID:', req.sessionID);
-    console.log('Session user:', req.session.user ? req.session.user.username : 'non connecté');
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-    res.json({ user: req.session.user, guilds: req.session.guilds });
-});
-
-// Route guilds
 app.get('/api/guilds', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
 
@@ -124,13 +110,11 @@ app.get('/api/guilds', async (req, res) => {
     res.json(guilds);
 });
 
-// Route logout
 app.get('/auth/logout', (req, res) => {
     req.session.destroy();
     res.redirect('https://orionbot-backend-hxyh.onrender.com/');
 });
 
-// Pages
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
@@ -143,7 +127,6 @@ app.get('/server.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../server.html'));
 });
 
-// Channels et rôles
 app.get('/api/guild/:guildId/channels', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
 
@@ -163,7 +146,6 @@ app.get('/api/guild/:guildId/channels', async (req, res) => {
     }
 });
 
-// Config
 app.get('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     const config = await getConfig(req.params.guildId);
@@ -172,22 +154,12 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-    console.log('Config reçue:', JSON.stringify(req.body));
-    const result = await mongoose.connection.collection('configs').updateOne(
-    { guildId: req.params.guildId },
-    { $set: update },
-    { upsert: true }
-    );
-    console.log('Update result:', JSON.stringify(result));
     try {
-        const { saveConfig } = require('./database.js');
-        const guildId = req.params.guildId;
         const data = req.body;
-        
-        // Construit l'update avec $set pour ne pas écraser les autres champs
         const update = {};
+
         for (const [key, value] of Object.entries(data)) {
-            if (typeof value === 'object' && !Array.isArray(value)) {
+            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
                 for (const [subKey, subValue] of Object.entries(value)) {
                     update[key + '.' + subKey] = subValue;
                 }
@@ -195,13 +167,15 @@ app.post('/api/guild/:guildId/config', async (req, res) => {
                 update[key] = value;
             }
         }
-        
+
+        console.log('Update envoyé à MongoDB:', JSON.stringify(update));
+
         await mongoose.connection.collection('configs').updateOne(
-            { guildId },
+            { guildId: req.params.guildId },
             { $set: update },
             { upsert: true }
         );
-        
+
         res.json({ success: true });
     } catch (e) {
         console.error(e);

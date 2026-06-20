@@ -155,28 +155,11 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     try {
-        const data = req.body;
-        const update = {};
-
-        for (const [key, value] of Object.entries(data)) {
-            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                for (const [subKey, subValue] of Object.entries(value)) {
-                    update[key + '.' + subKey] = subValue;
-                }
-            } else {
-                update[key] = value;
-            }
-        }
-
-        console.log('Update envoyé:', JSON.stringify(update));
-        console.log('Update final:', JSON.stringify(update));
-
         await mongoose.connection.collection('configs').updateOne(
             { guildId: req.params.guildId },
-            { $set: update },
+            { $set: req.body },
             { upsert: true }
         );
-
         res.json({ success: true });
     } catch (e) {
         console.error(e);

@@ -869,7 +869,7 @@
                     welcome: {
                         enabled: document.getElementById('welcome-enabled').checked,
                         channelId: document.getElementById('welcome-channel').value,
-                        message: document.getElementById('welcome-message').value,
+                        message: document.getElementById('welcome-message').value
                     },
                     goodbye: {
                         enabled: document.getElementById('leave-enabled').checked,
@@ -890,13 +890,13 @@
             }
 
             try {
-                const res = await fetch(BACKEND + '/api/guild/' + guildId + '/config', {
+                const r = await fetch(BACKEND + '/api/guild/' + guildId + '/config', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify(data)
                 });
-                const result = await res.json();
+                const result = await r.json();
                 if (result.success) alert('✅ Configuration sauvegardée !');
                 else alert('❌ Erreur lors de la sauvegarde');
             } catch (e) {

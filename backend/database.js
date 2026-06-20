@@ -108,10 +108,11 @@ async function connectDB() {
 }
 
 async function getConfig(guildId) {
-    let config = await Config.findOne({ guildId });
+    let config = await Config.findOne({ guildId }).lean();
     if (!config) {
         config = new Config({ guildId });
         await config.save();
+        return config.toObject();
     }
     return config;
 }

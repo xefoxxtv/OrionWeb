@@ -172,12 +172,17 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-    await Config.findOneAndUpdate(
-        { guildId: req.params.guildId },
-        { $set: req.body },
-        { upsert: true, returnDocument: 'after' }
-    );
-    res.json({ success: true });
+    try {
+        await mongoose.connection.collection('configs').findOneAndUpdate(
+            { guildId: req.params.guildId },
+            { $set: req.body },
+            { upsert: true }
+        );
+        res.json({ success: true });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
 });
 
 app.listen(process.env.PORT, () => {

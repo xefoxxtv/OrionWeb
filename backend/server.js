@@ -155,11 +155,29 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     try {
+        const data = req.body;
+        const dotNotation = {};
+
+        function flatten(obj, prefix = '') {
+            for (const [key, value] of Object.entries(obj)) {
+                const newKey = prefix ? prefix + '.' + key : key;
+                if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    flatten(value, newKey);
+                } else {
+                    dotNotation[newKey] = value;
+                }
+            }
+        }
+
+        flatten(data);
+        console.log('Dot notation:', JSON.stringify(dotNotation));
+
         await mongoose.connection.collection('configs').updateOne(
             { guildId: req.params.guildId },
-            { $set: req.body },
+            { $set: dotNotation },
             { upsert: true }
         );
+
         res.json({ success: true });
     } catch (e) {
         console.error(e);

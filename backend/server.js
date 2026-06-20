@@ -172,6 +172,7 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    console.log('Config reçue:', JSON.stringify(req.body));
     try {
         const { saveConfig } = require('./database.js');
         const guildId = req.params.guildId;

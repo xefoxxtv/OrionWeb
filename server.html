@@ -866,37 +866,27 @@
 
             if (module === 'welcome') {
                 data = {
-                    'welcome.enabled': document.getElementById('welcome-enabled').checked,
-                    'welcome.channelId': document.getElementById('welcome-channel').value,
-                    'welcome.message': document.getElementById('welcome-message').value,
-                    'goodbye.enabled': document.getElementById('leave-enabled').checked,
-                    'goodbye.channelId': document.getElementById('leave-channel').value,
-                    'goodbye.message': document.getElementById('leave-message').value
+                    welcome: {
+                        enabled: document.getElementById('welcome-enabled').checked,
+                        channelId: document.getElementById('welcome-channel').value,
+                        message: document.getElementById('welcome-message').value,
+                    },
+                    goodbye: {
+                        enabled: document.getElementById('leave-enabled').checked,
+                        channelId: document.getElementById('leave-channel').value,
+                        message: document.getElementById('leave-message').value
+                    }
                 };
             } else if (module === 'moderation') {
-                data = { 'moderation.logChannelId': document.getElementById('mod-log-channel').value };
+                data = { moderation: { logChannelId: document.getElementById('mod-log-channel').value } };
             } else if (module === 'autorole') {
-                data = {
-                    'autorole.enabled': document.getElementById('autorole-enabled').checked,
-                    'autorole.roles': [document.getElementById('autorole-role').value]
-                };
+                data = { autorole: { enabled: document.getElementById('autorole-enabled').checked, roles: [document.getElementById('autorole-role').value] } };
             } else if (module === 'tickets') {
-                data = {
-                    'tickets.channelId': document.getElementById('ticket-channel').value,
-                    'tickets.categoryId': document.getElementById('ticket-category').value,
-                    'tickets.roleId': document.getElementById('ticket-role').value
-                };
+                data = { tickets: { channelId: document.getElementById('ticket-channel').value, categoryId: document.getElementById('ticket-category').value, roleId: document.getElementById('ticket-role').value } };
             } else if (module === 'tempvoice') {
-                data = {
-                    'tempvoice.enabled': true,
-                    'tempvoice.createChannelId': document.getElementById('tempvoice-channel').value,
-                    'tempvoice.categoryId': document.getElementById('tempvoice-category').value
-                };
+                data = { tempvoice: { enabled: true, createChannelId: document.getElementById('tempvoice-channel').value, categoryId: document.getElementById('tempvoice-category').value } };
             } else if (module === 'stats') {
-                data = {
-                    'stats.enabled': document.getElementById('stats-enabled').checked,
-                    'stats.categoryId': document.getElementById('stats-category').value
-                };
+                data = { stats: { enabled: document.getElementById('stats-enabled').checked, categoryId: document.getElementById('stats-category').value } };
             }
 
             try {

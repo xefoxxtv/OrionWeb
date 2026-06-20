@@ -174,7 +174,7 @@ app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     console.log('Config reçue:', JSON.stringify(req.body));
     const result = await mongoose.connection.collection('configs').updateOne(
-    { guildId },
+    { guildId: req.params.guildId },
     { $set: update },
     { upsert: true }
     );

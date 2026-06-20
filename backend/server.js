@@ -172,7 +172,11 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-    await saveConfig(req.params.guildId, req.body);
+    await Config.findOneAndUpdate(
+        { guildId: req.params.guildId },
+        { $set: req.body },
+        { upsert: true, returnDocument: 'after' }
+    );
     res.json({ success: true });
 });
 

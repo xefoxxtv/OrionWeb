@@ -168,7 +168,8 @@ app.post('/api/guild/:guildId/config', async (req, res) => {
             }
         }
 
-        console.log('Update envoyé à MongoDB:', JSON.stringify(update));
+        console.log('Update envoyé:', JSON.stringify(update));
+        console.log('Update final:', JSON.stringify(update));
 
         await mongoose.connection.collection('configs').updateOne(
             { guildId: req.params.guildId },

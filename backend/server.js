@@ -173,11 +173,28 @@ app.get('/api/guild/:guildId/config', async (req, res) => {
 app.post('/api/guild/:guildId/config', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     try {
-        await mongoose.connection.collection('configs').findOneAndUpdate(
-            { guildId: req.params.guildId },
-            { $set: req.body },
+        const { saveConfig } = require('./database.js');
+        const guildId = req.params.guildId;
+        const data = req.body;
+        
+        // Construit l'update avec $set pour ne pas écraser les autres champs
+        const update = {};
+        for (const [key, value] of Object.entries(data)) {
+            if (typeof value === 'object' && !Array.isArray(value)) {
+                for (const [subKey, subValue] of Object.entries(value)) {
+                    update[key + '.' + subKey] = subValue;
+                }
+            } else {
+                update[key] = value;
+            }
+        }
+        
+        await mongoose.connection.collection('configs').updateOne(
+            { guildId },
+            { $set: update },
             { upsert: true }
         );
+        
         res.json({ success: true });
     } catch (e) {
         console.error(e);

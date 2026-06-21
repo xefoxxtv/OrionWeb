@@ -55,7 +55,7 @@ async function initNavbar() {
     const style = document.createElement('style');
     style.textContent = `
         .nav-right { display: flex; align-items: center; gap: 12px; }
-        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; position: absolute; left: 50%; transform: translateX(-50%); }
         .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: var(--text); }
         .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
@@ -122,7 +122,12 @@ window.addEventListener('load', () => {
 
 document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
-    if (link && link.href && !link.href.startsWith('#') && link.target !== '_blank' && link.href.includes(window.location.origin)) {
+    if (
+        link && link.href &&
+        !link.href.includes('#') &&
+        link.target !== '_blank' &&
+        link.href.includes(window.location.origin)
+    ) {
         e.preventDefault();
         document.body.classList.remove('loaded');
         document.body.classList.add('fade-out');

@@ -462,9 +462,9 @@
             border-top: 1px solid var(--border);
             padding: 60px 40px 40px;
             display: grid;
-            grid-template-columns: 1fr auto auto;
+            grid-template-columns: 1fr 1fr;
             gap: 40px;
-            align-items: start;
+            align-items: center;
         }
 
         .footer-logo {
@@ -472,6 +472,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
+            justify-content: center;
         }
 
         .footer-logo-img {
@@ -488,39 +489,54 @@
         .footer-logo span {
             font-weight: 700;
             color: var(--purple-light);
+            font-size: 18px;
         }
 
         footer p {
             font-size: 13px;
             color: var(--text-muted);
+            text-align: center;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .footer-right {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
         }
 
         .footer-col {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         .footer-col-title {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--text);
             margin-bottom: 4px;
         }
 
         .footer-col a {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.2s;
-        }  
+        }
 
         .footer-col a:hover {
             color: var(--purple-light);
         }
 
         .footer-bottom {
-            border-top: 1px solid var(--border);
             padding: 20px 40px;
             text-align: center;
         }
@@ -668,24 +684,26 @@
 
     <!-- FOOTER -->
     <footer>
-        <div>
+        <div class="footer-left">
             <div class="footer-logo">
                 <div class="footer-logo-img"></div>
                 <span>OrionBot</span>
             </div>
             <p>Le bot Discord tout-en-un pour gérer<br>et personnaliser ton serveur.</p>
         </div>
-        <div class="footer-col">
-            <span class="footer-col-title">Navigation</span>
-            <a href="#features">Fonctionnalités</a>
-            <a href="#services">Services</a>
-            <a href="#contact">Contact</a>
-        </div>
-        <div class="footer-col">
-            <span class="footer-col-title">Légal</span>
-            <a href="/legal.html">Confidentialité</a>
-            <a href="/legal.html">CGU</a>
-            <a href="/legal.html">Mentions légales</a>
+        <div class="footer-right">
+            <div class="footer-col">
+                <span class="footer-col-title">Navigation</span>
+                <a href="#features">Fonctionnalités</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-col">
+                <span class="footer-col-title">Légal</span>
+                <a href="/legal.html">Confidentialité</a>
+                <a href="/legal.html">CGU</a>
+                <a href="/legal.html">Mentions légales</a>
+            </div>
         </div>
     </footer>
     <div class="footer-bottom">

@@ -222,6 +222,11 @@ app.get('/admin.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../admin.html'));
 });
 
+// Page legal
+app.get('/legal.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../legal.html'));
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

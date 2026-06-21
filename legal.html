@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions légales — OrionBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple: #A855F7;
+            --purple-dark: #7C3AED;
+            --purple-light: #C084FC;
+            --bg: #080810;
+            --bg-card: #0f0f1a;
+            --bg-card2: #13131f;
+            --text: #ffffff;
+            --text-muted: #8b8fa8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(8, 8, 16, 0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        main { padding: 100px 40px 80px; max-width: 800px; margin: 0 auto; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+        .tab {
+            padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: 1px solid var(--border); background: transparent;
+            color: var(--text-muted); transition: all 0.2s;
+        }
+        .tab.active { background: rgba(168, 85, 247, 0.15); border-color: var(--purple); color: var(--purple-light); }
+        .tab:hover { border-color: var(--purple); color: var(--text); }
+        .content { display: none; }
+        .content.active { display: block; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #fff, var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .date { font-size: 13px; color: var(--text-muted); margin-bottom: 40px; }
+        h2 { font-size: 18px; font-weight: 700; color: var(--purple-light); margin: 32px 0 12px; }
+        p { font-size: 15px; color: var(--text-muted); line-height: 1.8; margin-bottom: 12px; }
+        a { color: var(--purple-light); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
+        ul { padding-left: 20px; color: var(--text-muted); font-size: 15px; line-height: 2; }
+    </style>
+</head>
+<body>
+    <nav id="navbar"></nav>
+    <script src="/navbar.js"></script>
+
+    <main>
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('confidentialite')">🔒 Politique de confidentialité</button>
+            <button class="tab" onclick="showTab('cgu')">📋 CGU</button>
+            <button class="tab" onclick="showTab('mentions')">⚖️ Mentions légales</button>
+        </div>
+
+        <!-- POLITIQUE DE CONFIDENTIALITÉ -->
+        <div id="confidentialite" class="content active">
+            <h1>Politique de confidentialité</h1>
+            <p class="date">Dernière mise à jour : juin 2026</p>
+
+            <h2>1. Qui sommes-nous ?</h2>
+            <p>OrionBot est un service de bot Discord développé et maintenu par <strong>XeFoXx</strong>. Le site web associé est accessible à l'adresse <strong>orionbot-backend-hxyh.onrender.com</strong>.</p>
+
+            <h2>2. Données collectées</h2>
+            <p>Lors de la connexion via Discord OAuth2, nous collectons les données suivantes :</p>
+            <div class="card">
+                <ul>
+                    <li>Votre identifiant Discord (ID)</li>
+                    <li>Votre pseudo Discord</li>
+                    <li>Votre avatar Discord</li>
+                    <li>Votre adresse email associée à votre compte Discord</li>
+                    <li>La liste des serveurs Discord dont vous êtes administrateur</li>
+                </ul>
+            </div>
+
+            <h2>3. Utilisation des données</h2>
+            <p>Ces données sont utilisées uniquement pour :</p>
+            <ul>
+                <li>Vous permettre de vous connecter au dashboard OrionBot</li>
+                <li>Afficher vos serveurs Discord dans le dashboard</li>
+                <li>Vous permettre de configurer OrionBot sur vos serveurs</li>
+            </ul>
+
+            <h2>4. Stockage des données</h2>
+            <p>Vos données de session sont stockées de manière sécurisée dans une base de données MongoDB hébergée sur MongoDB Atlas. Les sessions expirent automatiquement après 7 jours.</p>
+
+            <h2>5. Partage des données</h2>
+            <p>Vos données ne sont jamais vendues, partagées ou transmises à des tiers. Elles restent strictement confidentielles et utilisées uniquement dans le cadre du service OrionBot.</p>
+
+            <h2>6. Vos droits</h2>
+            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <ul>
+                <li>Droit d'accès à vos données</li>
+                <li>Droit de rectification</li>
+                <li>Droit à l'effacement (droit à l'oubli)</li>
+                <li>Droit d'opposition</li>
+            </ul>
+            <p>Pour exercer ces droits, contactez-nous sur notre serveur Discord : <a href="https://discord.gg/zgs4ubTNdZ" target="_blank">discord.gg/zgs4ubTNdZ</a></p>
+
+            <h2>7. Cookies</h2>
+            <p>OrionBot utilise uniquement un cookie de session technique nécessaire au fonctionnement du service. Aucun cookie publicitaire ou de traçage n'est utilisé.</p>
+
+            <h2>8. Contact</h2>
+            <p>Pour toute question relative à vos données personnelles, rejoignez notre serveur Discord : <a href="https://discord.gg/zgs4ubTNdZ" target="_blank">discord.gg/zgs4ubTNdZ</a></p>
+        </div>
+
+        <!-- CGU -->
+        <div id="cgu" class="content">
+            <h1>Conditions Générales d'Utilisation</h1>
+            <p class="date">Dernière mise à jour : juin 2026</p>
+
+            <h2>1. Objet</h2>
+            <p>Les présentes Conditions Générales d'Utilisation (CGU) régissent l'utilisation du service OrionBot, incluant le bot Discord et le dashboard web associé, développés par XeFoXx.</p>
+
+            <h2>2. Accès au service</h2>
+            <p>L'accès au service OrionBot est gratuit. Pour utiliser le dashboard, vous devez disposer d'un compte Discord valide et vous connecter via OAuth2 Discord.</p>
+
+            <h2>3. Utilisation acceptable</h2>
+            <p>En utilisant OrionBot, vous vous engagez à :</p>
+            <ul>
+                <li>Respecter les <a href="https://discord.com/terms" target="_blank">Conditions d'utilisation de Discord</a></li>
+                <li>Ne pas utiliser le service à des fins illégales ou malveillantes</li>
+                <li>Ne pas tenter de contourner les systèmes de sécurité</li>
+                <li>Ne pas utiliser le service pour harceler, menacer ou nuire à autrui</li>
+                <li>Ne pas tenter d'accéder aux données d'autres utilisateurs</li>
+            </ul>
+
+            <h2>4. Disponibilité du service</h2>
+            <p>OrionBot est fourni "tel quel" sans garantie de disponibilité continue. XeFoXx se réserve le droit de suspendre ou d'interrompre le service à tout moment, notamment pour des raisons de maintenance.</p>
+
+            <h2>5. Responsabilité</h2>
+            <p>XeFoXx ne pourra être tenu responsable des dommages directs ou indirects résultant de l'utilisation ou de l'impossibilité d'utiliser le service OrionBot.</p>
+
+            <h2>6. Modification des CGU</h2>
+            <p>XeFoXx se réserve le droit de modifier les présentes CGU à tout moment. Les utilisateurs seront informés des modifications via le serveur Discord officiel.</p>
+
+            <h2>7. Résiliation</h2>
+            <p>XeFoXx se réserve le droit de suspendre ou de supprimer l'accès au service à tout utilisateur ne respectant pas les présentes CGU, sans préavis.</p>
+
+            <h2>8. Contact</h2>
+            <p>Pour toute question, rejoignez notre serveur Discord : <a href="https://discord.gg/zgs4ubTNdZ" target="_blank">discord.gg/zgs4ubTNdZ</a></p>
+        </div>
+
+        <!-- MENTIONS LÉGALES -->
+        <div id="mentions" class="content">
+            <h1>Mentions légales</h1>
+            <p class="date">Dernière mise à jour : juin 2026</p>
+
+            <h2>Éditeur du service</h2>
+            <div class="card">
+                <p><strong>Nom :</strong> XeFoXx</p>
+                <p><strong>Statut :</strong> Particulier</p>
+                <p><strong>Pays :</strong> France</p>
+                <p><strong>Contact :</strong> <a href="https://discord.gg/zgs4ubTNdZ" target="_blank">discord.gg/zgs4ubTNdZ</a></p>
+            </div>
+
+            <h2>Hébergement</h2>
+            <div class="card">
+                <p><strong>Backend :</strong> Render Services, Inc. — 525 Brannan Street, Suite 300, San Francisco, CA 94107, USA</p>
+                <p><strong>Base de données :</strong> MongoDB Atlas — MongoDB, Inc. — 1633 Broadway, 38th Floor, New York, NY 10019, USA</p>
+            </div>
+
+            <h2>Propriété intellectuelle</h2>
+            <p>L'ensemble du contenu du service OrionBot (code, design, logo) est la propriété exclusive de XeFoXx. Toute reproduction, même partielle, est interdite sans autorisation préalable.</p>
+
+            <h2>Droit applicable</h2>
+            <p>Les présentes mentions légales sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents.</p>
+        </div>
+    </main>
+
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

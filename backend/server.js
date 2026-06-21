@@ -185,6 +185,43 @@ app.post('/api/guild/:guildId/config', async (req, res) => {
     }
 });
 
+// Route admin
+app.get('/api/admin/users', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    if (req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
+
+    try {
+        const sessions = await mongoose.connection.collection('sessions').find({}).toArray();
+        const users = [];
+
+        for (const session of sessions) {
+            try {
+                const data = JSON.parse(session.session);
+                if (data.user) {
+                    users.push({
+                        id: data.user.id,
+                        username: data.user.username,
+                        avatar: data.user.avatar,
+                        email: data.user.email || null,
+                        guilds: data.guilds ? data.guilds.filter(g => (g.permissions & 0x8) === 0x8).length : 0,
+                        lastSeen: session.expires ? new Date(session.expires - 7 * 24 * 60 * 60 * 1000) : null
+                    });
+                }
+            } catch {}
+        }
+
+        res.json({ users });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+// Page admin
+app.get('/admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../admin.html'));
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

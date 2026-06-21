@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — OrionBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple: #A855F7;
+            --purple-dark: #7C3AED;
+            --purple-light: #C084FC;
+            --bg: #080810;
+            --bg-card: #0f0f1a;
+            --bg-card2: #13131f;
+            --text: #ffffff;
+            --text-muted: #8b8fa8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(8, 8, 16, 0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-img { width: 38px; height: 38px; border-radius: 50%; background-image: url('assets/logo.jpg'); background-size: cover; background-position: center; }
+        .nav-logo span { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .badge-admin { background: rgba(168, 85, 247, 0.2); border: 1px solid var(--purple); color: var(--purple-light); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        main { padding: 100px 40px 80px; max-width: 1200px; margin: 0 auto; }
+        .page-title { font-size: 32px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #fff, var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 40px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; text-align: center; }
+        .stat-number { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--purple-light), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        .users-table { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .table-header h3 { font-size: 16px; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        td { padding: 16px 24px; font-size: 14px; border-bottom: 1px solid rgba(168, 85, 247, 0.05); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(168, 85, 247, 0.03); }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); }
+        .user-name { font-weight: 600; }
+        .user-id { font-size: 11px; color: var(--text-muted); }
+        .email { color: var(--purple-light); font-size: 13px; }
+        .no-email { color: var(--text-muted); font-size: 13px; font-style: italic; }
+        .guild-count { background: rgba(168, 85, 247, 0.1); color: var(--purple-light); padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .loading { text-align: center; padding: 60px; color: var(--text-muted); }
+        .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .access-denied { text-align: center; padding: 100px 40px; }
+        .access-denied h1 { font-size: 48px; margin-bottom: 16px; }
+        .access-denied p { color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <div class="nav-logo-img"></div>
+            <span>OrionBot</span>
+        </a>
+        <span class="badge-admin">👑 Panel Admin</span>
+    </nav>
+
+    <main id="main">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Vérification des accès...</p>
+        </div>
+    </main>
+
+    <script>
+        const BACKEND = '';
+
+        fetch(BACKEND + '/api/admin/users', { credentials: 'include' })
+            .then(r => r.json())
+            .then(data => {
+                const main = document.getElementById('main');
+
+                if (data.error) {
+                    main.innerHTML = '<div class="access-denied"><h1>🚫</h1><h2>' + data.error + '</h2><p>Tu n\'as pas accès à cette page.</p></div>';
+                    return;
+                }
+
+                const users = data.users;
+                const totalGuilds = users.reduce((acc, u) => acc + (u.guilds || 0), 0);
+
+                main.innerHTML = `
+                    <h1 class="page-title">👑 Panel Admin</h1>
+                    <p class="page-subtitle">Vue d'ensemble des utilisateurs connectés à OrionBot.</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">${users.length}</div>
+                            <div class="stat-label">Utilisateurs connectés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${users.filter(u => u.email).length}</div>
+                            <div class="stat-label">Emails récupérés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${totalGuilds}</div>
+                            <div class="stat-label">Serveurs gérés</div>
+                        </div>
+                    </div>
+
+                    <div class="users-table">
+                        <div class="table-header">
+                            <h3>👥 Utilisateurs (${users.length})</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Serveurs admin</th>
+                                    <th>Dernière connexion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${users.map(u => `
+                                    <tr>
+                                        <td>
+                                            <div class="user-info">
+                                                <img class="user-avatar" src="${u.avatar ? 'https://cdn.discordapp.com/avatars/' + u.id + '/' + u.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
+                                                <div>
+                                                    <div class="user-name">${u.username}</div>
+                                                    <div class="user-id">${u.id}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>${u.email ? '<span class="email">' + u.email + '</span>' : '<span class="no-email">Non fourni</span>'}</td>
+                                        <td><span class="guild-count">${u.guilds || 0} serveurs</span></td>
+                                        <td style="color: var(--text-muted); font-size: 13px;">${u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Inconnue'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            })
+            .catch(() => {
+                document.getElementById('main').innerHTML = '<div class="access-denied"><h1>❌</h1><h2>Erreur de connexion</h2></div>';
+            });
+    </script>
+</body>
+</html>

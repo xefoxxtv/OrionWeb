@@ -125,67 +125,67 @@
         <!-- PANEL 1 : SERVICE -->
         <div class="panel active" id="panel1">
             <div class="service-grid">
-                <div class="service-card" onclick="selectService(this, 'Bot de modération')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Bot de modération')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">🛡️</div>
                     <div class="service-name">Bot de modération</div>
                     <div class="service-desc">Kick, ban, warn, logs, anti-spam...</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Bot de gestion de serveur')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Bot de gestion de serveur')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">⚙️</div>
                     <div class="service-name">Bot de gestion</div>
                     <div class="service-desc">Bienvenue, rôles, tickets, planning...</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Bot custom complet')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Bot custom complet')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">🤖</div>
                     <div class="service-name">Bot custom complet</div>
                     <div class="service-desc">Tout ce que tu veux, sur mesure.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Bot économie/niveaux')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Bot économie/niveaux')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">📈</div>
                     <div class="service-name">Bot économie/niveaux</div>
                     <div class="service-desc">XP, niveaux, monnaie virtuelle...</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Site vitrine')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Site vitrine')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">🌐</div>
                     <div class="service-name">Site vitrine</div>
                     <div class="service-desc">Présentation simple et moderne.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Dashboard web')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Dashboard web')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">📊</div>
                     <div class="service-name">Dashboard web</div>
                     <div class="service-desc">Interface de gestion pour ton bot.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Site boutique/commandes')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Site boutique/commandes')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">🛒</div>
                     <div class="service-name">Site boutique</div>
                     <div class="service-desc">Système de commandes en ligne.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Site custom complet')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Site custom complet')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">💻</div>
                     <div class="service-name">Site custom complet</div>
                     <div class="service-desc">Tout ce que tu veux, sur mesure.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Pack Starter')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Pack Starter')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">📦</div>
                     <div class="service-name">Pack Starter</div>
                     <div class="service-desc">Bot basique + site vitrine.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Pack Pro')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Pack Pro')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">🚀</div>
                     <div class="service-name">Pack Pro</div>
                     <div class="service-desc">Bot custom + dashboard web.</div>
                 </div>
-                <div class="service-card" onclick="selectService(this, 'Pack Premium')">
+                <div class="service-card" data-service="Bot de modération" onclick="selectService(this, 'Pack Premium')">
                     <span class="service-check">✓</span>
                     <div class="service-icon">👑</div>
                     <div class="service-name">Pack Premium</div>
@@ -277,6 +277,47 @@
     </main>
 
     <script>
+
+        // Vérification si mode édition
+        const urlParams = new URLSearchParams(window.location.search);
+        const editId = urlParams.get('edit');
+
+        async function loadEditDevis() {
+            if (!editId) return;
+
+            document.querySelector('h1').textContent = '✏️ Modifier mon devis';
+            document.querySelector('.subtitle').textContent = 'Modifie ta demande et renvoie-la.';
+
+            const res = await fetch('/api/devis/' + editId, { credentials: 'include' });
+            const devis = await res.json();
+
+            if (devis.error) return;
+
+            // Pré-sélectionne le service
+            document.querySelectorAll('.service-card').forEach(card => {
+                if (card.getAttribute('data-service') === devis.service) {
+                    card.classList.add('selected');
+                    selectedService = devis.service;
+                    document.getElementById('btn-next1').disabled = false;
+                }
+            });
+
+            // Pré-remplit les champs
+            document.getElementById('input-name').value = devis.nom || '';
+            document.getElementById('input-desc').value = devis.description || '';
+            document.getElementById('input-delay').value = devis.delai || '';
+
+            // Pré-sélectionne le budget
+            document.querySelectorAll('.budget-option').forEach(btn => {
+                if (btn.textContent === devis.budget) {
+                    btn.classList.add('selected');
+                    selectedBudget = devis.budget;
+                }
+            });
+        }
+
+        loadEditDevis();
+
         let selectedService = '';
         let selectedBudget = '';
 
@@ -323,9 +364,12 @@
                 date: new Date().toISOString()
             };
 
+            const url = editId ? '/api/devis/' + editId : '/api/devis';
+            const method = editId ? 'PUT' : 'POST';
+
             try {
-                const res = await fetch('/api/devis', {
-                    method: 'POST',
+                const res = await fetch(url, {
+                    method,
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify(devis)

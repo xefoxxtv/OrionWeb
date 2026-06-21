@@ -22,67 +22,57 @@
         main { padding: 100px 40px 80px; max-width: 900px; margin: 0 auto; }
         h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #fff, var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 40px; }
-
         .devis-list { display: flex; flex-direction: column; gap: 16px; }
-
-        .devis-card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 24px; cursor: pointer;
-            transition: all 0.2s;
-        }
+        .devis-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; }
         .devis-card:hover { border-color: var(--purple); transform: translateY(-2px); }
-
         .devis-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .devis-service { font-size: 16px; font-weight: 700; }
         .devis-date { font-size: 13px; color: var(--text-muted); }
-
         .devis-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
-
         .devis-footer { display: flex; align-items: center; justify-content: space-between; }
         .devis-budget { font-size: 13px; color: var(--text-muted); }
-
-        .badge {
-            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
-        }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
         .badge-attente { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
-        .badge-accepte { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-accepte { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
         .badge-refuse { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .badge-encours { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
+        .badge-en_cours { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
         .badge-termine { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-
         .empty { text-align: center; padding: 80px 0; color: var(--text-muted); }
         .empty-icon { font-size: 48px; margin-bottom: 16px; }
-
         .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 60px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.open { display: flex; }
-        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; }
+        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
         .modal-title { font-size: 20px; font-weight: 800; }
-        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
         .modal-close:hover { color: var(--text); }
         .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
         .modal-row:last-of-type { border-bottom: none; }
         .modal-label { color: var(--text-muted); }
         .modal-value { font-weight: 600; max-width: 60%; text-align: right; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .btn { padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: white; }
+        .btn-danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn:hover { transform: translateY(-1px); }
 
-        .messages-section { margin-top: 24px; }
+        /* MESSAGES */
+        .messages-section { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 24px; }
         .messages-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
-        .message-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 250px; overflow-y: auto; }
+        .message-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; max-height: 200px; overflow-y: auto; }
         .message { padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
         .message.admin { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--border); }
-        .message.client { background: var(--bg-card2); border: 1px solid var(--border); text-align: right; }
+        .message.client { background: var(--bg-card2); border: 1px solid var(--border); }
         .message-author { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .message-input-row { display: flex; gap: 8px; }
         .message-input { flex: 1; padding: 12px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; }
         .message-input:focus { border-color: var(--purple); }
-        .btn { padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
-        .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: white; }
-        .btn-primary:hover { transform: translateY(-1px); }
-        .no-messages { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px; }
+        .motif-refuse { font-size: 13px; color: #ef4444; margin-top: 8px; padding: 10px; background: rgba(239,68,68,0.08); border-radius: 8px; border: 1px solid rgba(239,68,68,0.2); }
     </style>
 </head>
 <body>
@@ -96,18 +86,19 @@
     </main>
 
     <!-- MODAL -->
-    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title" id="modal-title">Détails du devis</span>
+                <span class="modal-title" id="modal-title">Détails</span>
                 <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
             </div>
             <div id="modal-content"></div>
+            <div id="modal-actions" class="modal-actions"></div>
             <div class="messages-section">
                 <div class="messages-title">💬 Messages</div>
                 <div class="message-list" id="message-list"></div>
                 <div class="message-input-row">
-                    <input type="text" class="message-input" id="message-input" placeholder="Envoie un message...">
+                    <input type="text" class="message-input" id="message-input" placeholder="Envoie un message..." onkeydown="if(event.key==='Enter') sendMessage()">
                     <button class="btn btn-primary" onclick="sendMessage()">Envoyer</button>
                 </div>
             </div>
@@ -115,13 +106,13 @@
     </div>
 
     <script>
-        let currentDevisId = null;
+        let currentDevis = null;
 
         const statusMap = {
             'en_attente': '<span class="badge badge-attente">⏳ En attente</span>',
-            'accepte': '<span class="badge badge-accepte">✅ Accepté</span>',
+            'accepte': '<span class="badge badge-accepte">🔄 En cours</span>',
             'refuse': '<span class="badge badge-refuse">❌ Refusé</span>',
-            'en_cours': '<span class="badge badge-encours">🔄 En cours</span>',
+            'en_cours': '<span class="badge badge-en_cours">🔄 En cours</span>',
             'termine': '<span class="badge badge-termine">🎉 Terminé</span>'
         };
 
@@ -130,10 +121,7 @@
             const data = await res.json();
             const container = document.getElementById('container');
 
-            if (data.error) {
-                window.location.href = '/auth/login';
-                return;
-            }
+            if (data.error) { window.location.href = '/auth/login'; return; }
 
             if (data.length === 0) {
                 container.innerHTML = `
@@ -148,7 +136,7 @@
             }
 
             container.innerHTML = '<div class="devis-list">' + data.map(d => `
-                <div class="devis-card" onclick="openModal('${d._id}', ${JSON.stringify(d).replace(/'/g, "\\'")})">
+                <div class="devis-card" onclick='openModal(${JSON.stringify(d)})'>
                     <div class="devis-header">
                         <span class="devis-service">${d.service}</span>
                         <span class="devis-date">${new Date(d.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
@@ -162,22 +150,39 @@
             `).join('') + '</div>';
         }
 
-        function openModal(id, devis) {
-            currentDevisId = id;
+        function openModal(devis) {
+            currentDevis = devis;
             document.getElementById('modal-title').textContent = devis.service;
+
+            let motifHtml = '';
+            if (devis.statut === 'refuse' && devis.motif) {
+                motifHtml = '<div class="motif-refuse">❌ Motif de refus : ' + devis.motif + '</div>';
+            }
+
             document.getElementById('modal-content').innerHTML = `
                 <div class="modal-row"><span class="modal-label">Statut</span><span class="modal-value">${statusMap[devis.statut] || statusMap['en_attente']}</span></div>
                 <div class="modal-row"><span class="modal-label">Service</span><span class="modal-value">${devis.service}</span></div>
                 <div class="modal-row"><span class="modal-label">Budget</span><span class="modal-value">${devis.budget || '—'}</span></div>
                 <div class="modal-row"><span class="modal-label">Délai</span><span class="modal-value">${devis.delai || '—'}</span></div>
-                <div class="modal-row"><span class="modal-label">Description</span><span class="modal-value">${devis.description || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Description</span><span class="modal-value" style="white-space:pre-wrap;">${devis.description || '—'}</span></div>
                 <div class="modal-row"><span class="modal-label">Date</span><span class="modal-value">${new Date(devis.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+                ${motifHtml}
             `;
+
+            const actions = document.getElementById('modal-actions');
+            if (devis.statut === 'en_attente') {
+                actions.innerHTML = `
+                    <button class="btn btn-danger" onclick="annulerDevis()">🗑️ Annuler la demande</button>
+                    <button class="btn btn-outline" onclick="modifierDevis()">✏️ Modifier</button>
+                `;
+            } else {
+                actions.innerHTML = '';
+            }
 
             const messages = devis.messages || [];
             const msgList = document.getElementById('message-list');
             if (messages.length === 0) {
-                msgList.innerHTML = '<div class="no-messages">Aucun message pour le moment.</div>';
+                msgList.innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">Aucun message.</p>';
             } else {
                 msgList.innerHTML = messages.map(m => `
                     <div class="message ${m.role}">
@@ -185,31 +190,48 @@
                         ${m.text}
                     </div>
                 `).join('');
+                msgList.scrollTop = msgList.scrollHeight;
             }
 
             document.getElementById('modal').classList.add('open');
         }
 
-        function closeModal(e) {
+        function closeModalOutside(e) {
             if (e.target === document.getElementById('modal')) {
                 document.getElementById('modal').classList.remove('open');
             }
         }
 
+        async function annulerDevis() {
+            if (!confirm('Tu veux vraiment annuler cette demande ?')) return;
+            const res = await fetch('/api/devis/' + currentDevis._id, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('modal').classList.remove('open');
+                loadDevis();
+            }
+        }
+
+        function modifierDevis() {
+            window.location.href = '/devis.html?edit=' + currentDevis._id;
+        }
+
         async function sendMessage() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
-            if (!text || !currentDevisId) return;
+            if (!text || !currentDevis) return;
 
-            const res = await fetch('/api/devis/' + currentDevisId + '/message', {
+            const res = await fetch('/api/devis/' + currentDevis._id + '/message', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({ text })
             });
 
-            const data = await res.json();
-            if (data.success) {
+            if ((await res.json()).success) {
                 input.value = '';
                 const msgList = document.getElementById('message-list');
                 const msg = document.createElement('div');

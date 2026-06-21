@@ -303,10 +303,40 @@ app.post('/api/devis/:id/message', async (req, res) => {
     }
 });
 
+// Route Statut Commande
 app.post('/api/admin/devis/:id/statut', async (req, res) => {
     if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
     try {
-        await Devis.findByIdAndUpdate(req.params.id, { statut: req.body.statut });
+        const update = { statut: req.body.statut };
+        if (req.body.motif) update.motif = req.body.motif;
+        await Devis.findByIdAndUpdate(req.params.id, update);
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+// Route DELETE 
+app.delete('/api/devis/:id', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        if (!devis || devis.userId !== req.session.user.id) return res.status(403).json({ error: 'Accès refusé' });
+        if (devis.statut !== 'en_attente') return res.status(400).json({ error: 'Impossible d\'annuler une commande en cours' });
+        await Devis.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+// Route Admin et Message de Refus 
+app.post('/api/admin/devis/:id/message', async (req, res) => {
+    if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        devis.messages.push({ role: 'admin', text: req.body.text, date: new Date() });
+        await devis.save();
         res.json({ success: true });
     } catch (e) {
         res.status(500).json({ error: 'Erreur serveur' });

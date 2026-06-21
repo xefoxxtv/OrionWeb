@@ -66,6 +66,40 @@
         .badge-refuse { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
         .badge-encours { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
         .badge-termine { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .tabs { display: flex; gap: 8px; margin-bottom: 32px; }
+        .tab { padding: 10px 24px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.2s; }
+        .tab.active { background: rgba(168, 85, 247, 0.15); border-color: var(--purple); color: var(--purple-light); }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .badge-attente { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .badge-accepte, .badge-en_cours { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
+        .badge-refuse { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-termine { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .btn-action { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-accept { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .btn-refuse { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-termine { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
+        .btn-action:hover { transform: translateY(-1px); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .modal-title { font-size: 18px; font-weight: 800; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .modal-row:last-of-type { border-bottom: none; }
+        .modal-label { color: var(--text-muted); }
+        .modal-value { font-weight: 600; }
+        .motif-refuse { font-size: 13px; color: #ef4444; padding: 10px; background: rgba(239,68,68,0.08); border-radius: 8px; border: 1px solid rgba(239,68,68,0.2); }
+        .messages-section { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 24px; }
+        .messages-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+        .message-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; max-height: 200px; overflow-y: auto; }
+        .message { padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+        .message.admin { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--border); }
+        .message.client { background: var(--bg-card2); border: 1px solid var(--border); }
+        .message-author { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .message-input-row { display: flex; gap: 8px; }
+        .message-input { flex: 1; padding: 12px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; }
+        .message-input:focus { border-color: var(--purple); }
     </style>
 </head>
 <body>
@@ -100,7 +134,6 @@
                         <button class="tab" onclick="showTab('devis', this)">📋 Commandes</button>
                     </div>
 
-                    <!-- USERS -->
                     <div id="tab-users">
                         <div class="stats-grid">
                             <div class="stat-card">
@@ -118,7 +151,7 @@
                         </div>
                         <div class="users-table">
                             <div class="table-header"><h3>👥 Utilisateurs (${data.users.length})</h3></div>
-                                <table>
+                            <table>
                                 <thead>
                                     <tr>
                                         <th>Utilisateur</th>
@@ -141,7 +174,7 @@
                                             </td>
                                             <td>${u.email ? '<span class="email">' + u.email + '</span>' : '<span class="no-email">Non fourni</span>'}</td>
                                             <td><span class="guild-count">${u.guilds || 0} serveurs</span></td>
-                                            <td style="color: var(--text-muted); font-size: 13px;">${u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Inconnue'}</td>
+                                            <td style="color:var(--text-muted);font-size:13px;">${u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Inconnue'}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -149,7 +182,6 @@
                         </div>
                     </div>
 
-                    <!-- DEVIS -->
                     <div id="tab-devis" style="display:none;">
                         <div id="devis-container"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
                     </div>
@@ -168,6 +200,8 @@
             document.getElementById('tab-devis').style.display = tab === 'devis' ? 'block' : 'none';
         }
 
+        let currentDevisAdmin = null;
+
         async function loadDevis() {
             const res = await fetch('/api/admin/devis', { credentials: 'include' });
             const devisList = await res.json();
@@ -175,14 +209,14 @@
 
             const statusMap = {
                 'en_attente': '<span class="badge badge-attente">⏳ En attente</span>',
-                'accepte': '<span class="badge badge-accepte">✅ Accepté</span>',
+                'accepte': '<span class="badge badge-accepte">🔄 En cours</span>',
                 'refuse': '<span class="badge badge-refuse">❌ Refusé</span>',
-                'en_cours': '<span class="badge badge-encours">🔄 En cours</span>',
+                'en_cours': '<span class="badge badge-en_cours">🔄 En cours</span>',
                 'termine': '<span class="badge badge-termine">🎉 Terminé</span>'
             };
 
             if (!devisList.length) {
-                container.innerHTML = '<p style="color:var(--text-muted);padding:40px 0;">Aucun devis pour le moment.</p>';
+                container.innerHTML = '<p style="color:var(--text-muted);padding:40px 0;">Aucune commande pour le moment.</p>';
                 return;
             }
 
@@ -197,12 +231,12 @@
                                 <th>Budget</th>
                                 <th>Date</th>
                                 <th>Statut</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${devisList.map(d => `
-                                <tr>
+                                <tr style="cursor:pointer;" onclick='openDevisModal(${JSON.stringify(d)})'>
                                     <td>
                                         <div class="user-info">
                                             <img class="user-avatar" src="${d.avatar ? 'https://cdn.discordapp.com/avatars/' + d.userId + '/' + d.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
@@ -216,14 +250,15 @@
                                     <td style="font-size:14px;color:var(--text-muted);">${d.budget || '—'}</td>
                                     <td style="font-size:13px;color:var(--text-muted);">${new Date(d.date).toLocaleDateString('fr-FR')}</td>
                                     <td>${statusMap[d.statut] || statusMap['en_attente']}</td>
-                                    <td>
-                                        <select onchange="updateStatut('${d._id}', this.value)" style="background:var(--bg-card2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
-                                            <option value="en_attente" ${d.statut === 'en_attente' ? 'selected' : ''}>⏳ En attente</option>
-                                            <option value="accepte" ${d.statut === 'accepte' ? 'selected' : ''}>✅ Accepté</option>
-                                            <option value="refuse" ${d.statut === 'refuse' ? 'selected' : ''}>❌ Refusé</option>
-                                            <option value="en_cours" ${d.statut === 'en_cours' ? 'selected' : ''}>🔄 En cours</option>
-                                            <option value="termine" ${d.statut === 'termine' ? 'selected' : ''}>🎉 Terminé</option>
-                                        </select>
+                                    <td onclick="event.stopPropagation()">
+                                        ${d.statut === 'en_attente' ? `
+                                            <div style="display:flex;gap:8px;">
+                                                <button class="btn-action btn-accept" onclick="updateStatut('${d._id}', 'accepte')">✅ Accepter</button>
+                                                <button class="btn-action btn-refuse" onclick="refuserDevis('${d._id}')">❌ Refuser</button>
+                                            </div>
+                                        ` : d.statut === 'accepte' || d.statut === 'en_cours' ? `
+                                            <button class="btn-action btn-termine" onclick="updateStatut('${d._id}', 'termine')">🎉 Terminer</button>
+                                        ` : '—'}
                                     </td>
                                 </tr>
                             `).join('')}
@@ -233,6 +268,34 @@
             `;
         }
 
+        function openDevisModal(devis) {
+            currentDevisAdmin = devis;
+            document.getElementById('admin-modal-title').textContent = devis.service + ' — ' + devis.username;
+            document.getElementById('admin-modal-content').innerHTML = `
+                <div class="modal-row"><span class="modal-label">Client</span><span class="modal-value">${devis.username}</span></div>
+                <div class="modal-row"><span class="modal-label">Service</span><span class="modal-value">${devis.service}</span></div>
+                <div class="modal-row"><span class="modal-label">Budget</span><span class="modal-value">${devis.budget || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Délai</span><span class="modal-value">${devis.delai || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Description</span><span class="modal-value" style="white-space:pre-wrap;max-width:65%;text-align:right;">${devis.description || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Date</span><span class="modal-value">${new Date(devis.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+                ${devis.motif ? '<div class="motif-refuse" style="margin-top:12px;">❌ Motif de refus : ' + devis.motif + '</div>' : ''}
+            `;
+
+            const messages = devis.messages || [];
+            const msgList = document.getElementById('admin-message-list');
+            msgList.innerHTML = messages.length === 0
+                ? '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">Aucun message.</p>'
+                : messages.map(m => `
+                    <div class="message ${m.role}">
+                        <div class="message-author">${m.role === 'admin' ? '👑 XeFoXx' : '👤 ' + devis.username} · ${new Date(m.date).toLocaleDateString('fr-FR')}</div>
+                        ${m.text}
+                    </div>
+                `).join('');
+            msgList.scrollTop = msgList.scrollHeight;
+
+            document.getElementById('admin-modal').classList.add('open');
+        }
+
         async function updateStatut(id, statut) {
             await fetch('/api/admin/devis/' + id + '/statut', {
                 method: 'POST',
@@ -240,9 +303,61 @@
                 credentials: 'include',
                 body: JSON.stringify({ statut })
             });
+            loadDevis();
         }
 
-        
+        async function refuserDevis(id) {
+            const motif = prompt('Motif de refus (optionnel) :');
+            await fetch('/api/admin/devis/' + id + '/statut', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ statut: 'refuse', motif: motif || '' })
+            });
+            loadDevis();
+        }
+
+        async function sendAdminMessage() {
+            const input = document.getElementById('admin-message-input');
+            const text = input.value.trim();
+            if (!text || !currentDevisAdmin) return;
+
+            const res = await fetch('/api/admin/devis/' + currentDevisAdmin._id + '/message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ text })
+            });
+
+            if ((await res.json()).success) {
+                input.value = '';
+                const msgList = document.getElementById('admin-message-list');
+                const msg = document.createElement('div');
+                msg.className = 'message admin';
+                msg.innerHTML = '<div class="message-author">👑 XeFoXx · ' + new Date().toLocaleDateString('fr-FR') + '</div>' + text;
+                msgList.appendChild(msg);
+                msgList.scrollTop = msgList.scrollHeight;
+            }
+        }
+
     </script>
+
+    <div class="modal-overlay" id="admin-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title" id="admin-modal-title">Détails</span>
+            <button class="modal-close" onclick="document.getElementById('admin-modal').classList.remove('open')">✕</button>
+        </div>
+        <div id="admin-modal-content"></div>
+        <div class="messages-section">
+            <div class="messages-title">💬 Messages</div>
+            <div class="message-list" id="admin-message-list"></div>
+            <div class="message-input-row">
+                <input type="text" class="message-input" id="admin-message-input" placeholder="Répondre au client..." onkeydown="if(event.key==='Enter') sendAdminMessage()">
+                <button style="padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:white;" onclick="sendAdminMessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

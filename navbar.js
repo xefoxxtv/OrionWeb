@@ -1,8 +1,6 @@
 const ADMIN_ID = '1368991214359150754';
 const BACKEND = '';
 
-initNavbar();
-
 async function initNavbar() {
     let user = null;
 
@@ -56,30 +54,27 @@ async function initNavbar() {
     // CSS du menu
     const style = document.createElement('style');
     style.textContent = `
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo-img { width: 38px; height: 38px; border-radius: 50%; background-image: url('/assets/logo.jpg'); background-size: cover; background-position: center; }
+        .nav-logo span { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn { padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: white; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-outline:hover { border-color: var(--purple); color: var(--purple-light); transform: translateY(-2px); }
         .profile-menu { position: relative; }
-        .profile-trigger {
-            display: flex; align-items: center; gap: 10px;
-            cursor: pointer; padding: 6px 12px;
-            border-radius: 10px; border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
+        .profile-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border); transition: all 0.2s; }
         .profile-trigger:hover { border-color: var(--purple); background: rgba(168, 85, 247, 0.05); }
         .profile-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--purple); }
         .profile-name { font-size: 14px; font-weight: 600; color: var(--text); }
         .profile-arrow { font-size: 12px; color: var(--text-muted); }
-        .profile-dropdown {
-            position: absolute; top: calc(100% + 8px); right: 0;
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 8px; min-width: 180px;
-            display: none; flex-direction: column; gap: 2px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3); z-index: 999;
-        }
+        .profile-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 180px; display: none; flex-direction: column; gap: 2px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); z-index: 999; }
         .profile-dropdown.open { display: flex; }
-        .dropdown-item {
-            padding: 10px 14px; border-radius: 8px;
-            font-size: 14px; font-weight: 500; color: var(--text-muted);
-            text-decoration: none; transition: all 0.2s;
-        }
+        .dropdown-item { padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: all 0.2s; }
         .dropdown-item:hover { background: rgba(168, 85, 247, 0.1); color: var(--text); }
         .admin-item { color: var(--purple-light) !important; }
         .admin-item:hover { background: rgba(168, 85, 247, 0.15) !important; }

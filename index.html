@@ -460,18 +460,18 @@
         /* FOOTER */
         footer {
             border-top: 1px solid var(--border);
-            padding: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
+            padding: 60px 40px 40px;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 40px;
+            align-items: start;
         }
 
         .footer-logo {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 12px;
         }
 
         .footer-logo-img {
@@ -495,20 +495,39 @@
             color: var(--text-muted);
         }
 
-        .footer-links {
+        .footer-col {
             display: flex;
-            gap: 24px;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .footer-links a {
+        .footer-col-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .footer-col a {
             font-size: 13px;
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.2s;
+        }  
+
+        .footer-col a:hover {
+            color: var(--purple-light);
         }
 
-        .footer-links a:hover {
-            color: var(--purple-light);
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding: 20px 40px;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 13px;
+            color: var(--text-muted);
         }
     </style>
 </head>
@@ -649,22 +668,29 @@
 
     <!-- FOOTER -->
     <footer>
-        <div class="footer-logo">
-            <div class="footer-logo-img"></div>
-            <span>OrionBot</span>
+        <div>
+            <div class="footer-logo">
+                <div class="footer-logo-img"></div>
+                <span>OrionBot</span>
+            </div>
+            <p>Le bot Discord tout-en-un pour gérer<br>et personnaliser ton serveur.</p>
         </div>
-        <p style="text-align:center; width:100%;">© 2026 OrionBot — Développé par XeFoXx</p>
-        <div class="footer-links">
-            <div class="footer-links">
+        <div class="footer-col">
+            <span class="footer-col-title">Navigation</span>
             <a href="#features">Fonctionnalités</a>
             <a href="#services">Services</a>
             <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+            <span class="footer-col-title">Légal</span>
             <a href="/legal.html">Confidentialité</a>
             <a href="/legal.html">CGU</a>
             <a href="/legal.html">Mentions légales</a>
-</div>
         </div>
     </footer>
+    <div class="footer-bottom">
+        <p>© 2026 OrionBot — Développé par XeFoXx</p>
+    </div>
 
 </body>
 </html>

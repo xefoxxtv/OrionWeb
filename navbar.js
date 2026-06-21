@@ -56,6 +56,7 @@ async function initNavbar() {
     // CSS du menu
     const style = document.createElement('style');
     style.textContent = `
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(8, 8, 16, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
         .nav-right { display: flex; align-items: center; gap: 12px; }
         .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; position: absolute; left: 50%; transform: translateX(-50%); }
         .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }

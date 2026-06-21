@@ -285,6 +285,24 @@ app.get('/api/admin/devis', async (req, res) => {
     }
 });
 
+// Route Commande/Suivi
+app.get('/commandes.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../commandes.html'));
+});
+
+app.post('/api/devis/:id/message', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        if (!devis || devis.userId !== req.session.user.id) return res.status(403).json({ error: 'Accès refusé' });
+        devis.messages.push({ role: 'client', text: req.body.text, date: new Date() });
+        await devis.save();
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

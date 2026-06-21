@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes commandes — OrionBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple: #A855F7;
+            --purple-dark: #7C3AED;
+            --purple-light: #C084FC;
+            --bg: #080810;
+            --bg-card: #0f0f1a;
+            --bg-card2: #13131f;
+            --text: #ffffff;
+            --text-muted: #8b8fa8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        main { padding: 100px 40px 80px; max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #fff, var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 40px; }
+
+        .devis-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .devis-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .devis-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+
+        .devis-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .devis-service { font-size: 16px; font-weight: 700; }
+        .devis-date { font-size: 13px; color: var(--text-muted); }
+
+        .devis-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+        .devis-footer { display: flex; align-items: center; justify-content: space-between; }
+        .devis-budget { font-size: 13px; color: var(--text-muted); }
+
+        .badge {
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+        }
+        .badge-attente { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .badge-accepte { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-refuse { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-encours { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
+        .badge-termine { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+        .empty { text-align: center; padding: 80px 0; color: var(--text-muted); }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; }
+
+        .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 60px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .modal-title { font-size: 20px; font-weight: 800; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px; }
+        .modal-close:hover { color: var(--text); }
+        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .modal-row:last-of-type { border-bottom: none; }
+        .modal-label { color: var(--text-muted); }
+        .modal-value { font-weight: 600; max-width: 60%; text-align: right; }
+
+        .messages-section { margin-top: 24px; }
+        .messages-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+        .message-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 250px; overflow-y: auto; }
+        .message { padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+        .message.admin { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--border); }
+        .message.client { background: var(--bg-card2); border: 1px solid var(--border); text-align: right; }
+        .message-author { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .message-input-row { display: flex; gap: 8px; }
+        .message-input { flex: 1; padding: 12px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; }
+        .message-input:focus { border-color: var(--purple); }
+        .btn { padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .no-messages { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <nav id="navbar"></nav>
+    <script src="/navbar.js"></script>
+
+    <main>
+        <h1>📋 Mes commandes</h1>
+        <p class="subtitle">Suis l'état de tes devis et échange avec moi.</p>
+        <div id="container"><div class="spinner"></div></div>
+    </main>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">Détails du devis</span>
+                <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+            </div>
+            <div id="modal-content"></div>
+            <div class="messages-section">
+                <div class="messages-title">💬 Messages</div>
+                <div class="message-list" id="message-list"></div>
+                <div class="message-input-row">
+                    <input type="text" class="message-input" id="message-input" placeholder="Envoie un message...">
+                    <button class="btn btn-primary" onclick="sendMessage()">Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDevisId = null;
+
+        const statusMap = {
+            'en_attente': '<span class="badge badge-attente">⏳ En attente</span>',
+            'accepte': '<span class="badge badge-accepte">✅ Accepté</span>',
+            'refuse': '<span class="badge badge-refuse">❌ Refusé</span>',
+            'en_cours': '<span class="badge badge-encours">🔄 En cours</span>',
+            'termine': '<span class="badge badge-termine">🎉 Terminé</span>'
+        };
+
+        async function loadDevis() {
+            const res = await fetch('/api/devis', { credentials: 'include' });
+            const data = await res.json();
+            const container = document.getElementById('container');
+
+            if (data.error) {
+                window.location.href = '/auth/login';
+                return;
+            }
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">📭</div>
+                        <p>Tu n'as pas encore de devis.</p>
+                        <br>
+                        <a href="/devis.html" style="color: var(--purple-light);">Demander un devis →</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '<div class="devis-list">' + data.map(d => `
+                <div class="devis-card" onclick="openModal('${d._id}', ${JSON.stringify(d).replace(/'/g, "\\'")})">
+                    <div class="devis-header">
+                        <span class="devis-service">${d.service}</span>
+                        <span class="devis-date">${new Date(d.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    </div>
+                    <div class="devis-desc">${d.description ? d.description.substring(0, 120) + '...' : 'Aucune description'}</div>
+                    <div class="devis-footer">
+                        <span class="devis-budget">💰 ${d.budget || 'Non précisé'}</span>
+                        ${statusMap[d.statut] || statusMap['en_attente']}
+                    </div>
+                </div>
+            `).join('') + '</div>';
+        }
+
+        function openModal(id, devis) {
+            currentDevisId = id;
+            document.getElementById('modal-title').textContent = devis.service;
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-row"><span class="modal-label">Statut</span><span class="modal-value">${statusMap[devis.statut] || statusMap['en_attente']}</span></div>
+                <div class="modal-row"><span class="modal-label">Service</span><span class="modal-value">${devis.service}</span></div>
+                <div class="modal-row"><span class="modal-label">Budget</span><span class="modal-value">${devis.budget || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Délai</span><span class="modal-value">${devis.delai || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Description</span><span class="modal-value">${devis.description || '—'}</span></div>
+                <div class="modal-row"><span class="modal-label">Date</span><span class="modal-value">${new Date(devis.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+            `;
+
+            const messages = devis.messages || [];
+            const msgList = document.getElementById('message-list');
+            if (messages.length === 0) {
+                msgList.innerHTML = '<div class="no-messages">Aucun message pour le moment.</div>';
+            } else {
+                msgList.innerHTML = messages.map(m => `
+                    <div class="message ${m.role}">
+                        <div class="message-author">${m.role === 'admin' ? '👑 XeFoXx' : '👤 Toi'} · ${new Date(m.date).toLocaleDateString('fr-FR')}</div>
+                        ${m.text}
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('modal').classList.add('open');
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById('modal')) {
+                document.getElementById('modal').classList.remove('open');
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text || !currentDevisId) return;
+
+            const res = await fetch('/api/devis/' + currentDevisId + '/message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ text })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                input.value = '';
+                const msgList = document.getElementById('message-list');
+                const msg = document.createElement('div');
+                msg.className = 'message client';
+                msg.innerHTML = '<div class="message-author">👤 Toi · ' + new Date().toLocaleDateString('fr-FR') + '</div>' + text;
+                msgList.appendChild(msg);
+                msgList.scrollTop = msgList.scrollHeight;
+            }
+        }
+
+        loadDevis();
+    </script>
+</body>
+</html>

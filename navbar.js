@@ -1,6 +1,31 @@
 const ADMIN_ID = '1368991214359150754';
 const BACKEND = '';
 
+const baseStyle = document.createElement('style');
+baseStyle.textContent = `
+    nav {
+        position: fixed; top: 0; width: 100%; z-index: 100;
+        padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+        background: rgba(8, 8, 16, 0.8); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo-img { width: 38px; height: 38px; border-radius: 50%; background-image: url('/assets/logo.jpg'); background-size: cover; background-position: center; }
+    .nav-logo span { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #fff 0%, #C084FC 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { color: #8b8fa8; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #ffffff; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .btn { padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; }
+    .btn-primary { background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%); color: white; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5); }
+    .btn-outline { background: transparent; color: #ffffff; border: 1px solid rgba(168, 85, 247, 0.2); }
+    .btn-outline:hover { border-color: #A855F7; color: #C084FC; transform: translateY(-2px); }
+`;
+document.head.appendChild(baseStyle);
+
+initNavbar();
+
 async function initNavbar() {
     let user = null;
 

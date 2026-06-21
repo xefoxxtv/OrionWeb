@@ -57,6 +57,15 @@
         .access-denied { text-align: center; padding: 100px 40px; }
         .access-denied h1 { font-size: 48px; margin-bottom: 16px; }
         .access-denied p { color: var(--text-muted); }
+        .tabs { display: flex; gap: 8px; margin-bottom: 32px; }
+        .tab { padding: 10px 24px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.2s; }
+        .tab.active { background: rgba(168, 85, 247, 0.15); border-color: var(--purple); color: var(--purple-light); }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .badge-attente { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .badge-accepte { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-refuse { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-encours { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid var(--border); }
+        .badge-termine { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
     </style>
 </head>
 <body>
@@ -71,6 +80,7 @@
     </main>
 
     <script>
+        const BACKEND = '';
 
         fetch(BACKEND + '/api/admin/users', { credentials: 'include' })
             .then(r => r.json())
@@ -82,66 +92,158 @@
                     return;
                 }
 
-                const users = data.users;
-                const totalGuilds = users.reduce((acc, u) => acc + (u.guilds || 0), 0);
-
                 main.innerHTML = `
                     <h1 class="page-title">👑 Panel Admin</h1>
-                    <p class="page-subtitle">Vue d'ensemble des utilisateurs connectés à OrionBot.</p>
+                    <p class="page-subtitle">Gère les utilisateurs et les commandes.</p>
 
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number">${users.length}</div>
-                            <div class="stat-label">Utilisateurs connectés</div>
+                    <div class="tabs">
+                        <button class="tab active" onclick="showTab('users', this)">👥 Utilisateurs</button>
+                        <button class="tab" onclick="showTab('devis', this)">📋 Commandes</button>
+                    </div>
+
+                    <!-- USERS -->
+                    <div id="tab-users">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">${data.users.length}</div>
+                                <div class="stat-label">Utilisateurs connectés</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${data.users.filter(u => u.email).length}</div>
+                                <div class="stat-label">Emails récupérés</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${data.users.reduce((acc, u) => acc + (u.guilds || 0), 0)}</div>
+                                <div class="stat-label">Serveurs gérés</div>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${users.filter(u => u.email).length}</div>
-                            <div class="stat-label">Emails récupérés</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${totalGuilds}</div>
-                            <div class="stat-label">Serveurs gérés</div>
+                        <div class="users-table">
+                            <div class="table-header"><h3>👥 Utilisateurs (${data.users.length})</h3></div>
+                                <table>
+                                <thead>
+                                    <tr>
+                                        <th>Utilisateur</th>
+                                        <th>Email</th>
+                                        <th>Serveurs admin</th>
+                                        <th>Dernière connexion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.users.map(u => `
+                                        <tr>
+                                            <td>
+                                                <div class="user-info">
+                                                    <img class="user-avatar" src="${u.avatar ? 'https://cdn.discordapp.com/avatars/' + u.id + '/' + u.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
+                                                    <div>
+                                                        <div class="user-name">${u.username}</div>
+                                                        <div class="user-id">${u.id}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>${u.email ? '<span class="email">' + u.email + '</span>' : '<span class="no-email">Non fourni</span>'}</td>
+                                            <td><span class="guild-count">${u.guilds || 0} serveurs</span></td>
+                                            <td style="color: var(--text-muted); font-size: 13px;">${u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Inconnue'}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <div class="users-table">
-                        <div class="table-header">
-                            <h3>👥 Utilisateurs (${users.length})</h3>
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Utilisateur</th>
-                                    <th>Email</th>
-                                    <th>Serveurs admin</th>
-                                    <th>Dernière connexion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${users.map(u => `
-                                    <tr>
-                                        <td>
-                                            <div class="user-info">
-                                                <img class="user-avatar" src="${u.avatar ? 'https://cdn.discordapp.com/avatars/' + u.id + '/' + u.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
-                                                <div>
-                                                    <div class="user-name">${u.username}</div>
-                                                    <div class="user-id">${u.id}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>${u.email ? '<span class="email">' + u.email + '</span>' : '<span class="no-email">Non fourni</span>'}</td>
-                                        <td><span class="guild-count">${u.guilds || 0} serveurs</span></td>
-                                        <td style="color: var(--text-muted); font-size: 13px;">${u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Inconnue'}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
+                    <!-- DEVIS -->
+                    <div id="tab-devis" style="display:none;">
+                        <div id="devis-container"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
                     </div>
                 `;
+
+                loadDevis();
             })
             .catch(() => {
                 document.getElementById('main').innerHTML = '<div class="access-denied"><h1>❌</h1><h2>Erreur de connexion</h2></div>';
             });
+
+        function showTab(tab, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
+            document.getElementById('tab-devis').style.display = tab === 'devis' ? 'block' : 'none';
+        }
+
+        async function loadDevis() {
+            const res = await fetch('/api/admin/devis', { credentials: 'include' });
+            const devisList = await res.json();
+            const container = document.getElementById('devis-container');
+
+            const statusMap = {
+                'en_attente': '<span class="badge badge-attente">⏳ En attente</span>',
+                'accepte': '<span class="badge badge-accepte">✅ Accepté</span>',
+                'refuse': '<span class="badge badge-refuse">❌ Refusé</span>',
+                'en_cours': '<span class="badge badge-encours">🔄 En cours</span>',
+                'termine': '<span class="badge badge-termine">🎉 Terminé</span>'
+            };
+
+            if (!devisList.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:40px 0;">Aucun devis pour le moment.</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="users-table" style="margin-top:24px;">
+                    <div class="table-header"><h3>📋 Commandes (${devisList.length})</h3></div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Budget</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${devisList.map(d => `
+                                <tr>
+                                    <td>
+                                        <div class="user-info">
+                                            <img class="user-avatar" src="${d.avatar ? 'https://cdn.discordapp.com/avatars/' + d.userId + '/' + d.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
+                                            <div>
+                                                <div class="user-name">${d.username}</div>
+                                                <div class="user-id">${d.nom || ''}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="font-size:14px;">${d.service}</td>
+                                    <td style="font-size:14px;color:var(--text-muted);">${d.budget || '—'}</td>
+                                    <td style="font-size:13px;color:var(--text-muted);">${new Date(d.date).toLocaleDateString('fr-FR')}</td>
+                                    <td>${statusMap[d.statut] || statusMap['en_attente']}</td>
+                                    <td>
+                                        <select onchange="updateStatut('${d._id}', this.value)" style="background:var(--bg-card2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
+                                            <option value="en_attente" ${d.statut === 'en_attente' ? 'selected' : ''}>⏳ En attente</option>
+                                            <option value="accepte" ${d.statut === 'accepte' ? 'selected' : ''}>✅ Accepté</option>
+                                            <option value="refuse" ${d.statut === 'refuse' ? 'selected' : ''}>❌ Refusé</option>
+                                            <option value="en_cours" ${d.statut === 'en_cours' ? 'selected' : ''}>🔄 En cours</option>
+                                            <option value="termine" ${d.statut === 'termine' ? 'selected' : ''}>🎉 Terminé</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        async function updateStatut(id, statut) {
+            await fetch('/api/admin/devis/' + id + '/statut', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ statut })
+            });
+        }
+
+        
     </script>
 </body>
 </html>

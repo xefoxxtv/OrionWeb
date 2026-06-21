@@ -303,6 +303,16 @@ app.post('/api/devis/:id/message', async (req, res) => {
     }
 });
 
+app.post('/api/admin/devis/:id/statut', async (req, res) => {
+    if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
+    try {
+        await Devis.findByIdAndUpdate(req.params.id, { statut: req.body.statut });
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

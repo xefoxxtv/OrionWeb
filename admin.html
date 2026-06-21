@@ -80,9 +80,8 @@
     </main>
 
     <script>
-        const BACKEND = '';
 
-        fetch(BACKEND + '/api/admin/users', { credentials: 'include' })
+        fetch('/api/admin/users', { credentials: 'include' })
             .then(r => r.json())
             .then(data => {
                 const main = document.getElementById('main');

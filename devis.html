@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demander un devis — OrionBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple: #A855F7;
+            --purple-dark: #7C3AED;
+            --purple-light: #C084FC;
+            --bg: #080810;
+            --bg-card: #0f0f1a;
+            --bg-card2: #13131f;
+            --text: #ffffff;
+            --text-muted: #8b8fa8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        main { padding: 100px 40px 80px; max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #fff, var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 48px; }
+
+        /* STEPS */
+        .steps { display: flex; gap: 8px; margin-bottom: 40px; align-items: center; }
+        .step { display: flex; align-items: center; gap: 8px; }
+        .step-num { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .step.active .step-num { background: var(--purple); border-color: var(--purple); color: white; }
+        .step.done .step-num { background: #22c55e; border-color: #22c55e; color: white; }
+        .step-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .step.active .step-label { color: var(--text); }
+        .step-divider { flex: 1; height: 1px; background: var(--border); }
+
+        /* PANELS */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* SERVICE GRID */
+        .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .service-card {
+            background: var(--bg-card); border: 2px solid var(--border);
+            border-radius: 14px; padding: 24px; cursor: pointer; transition: all 0.2s;
+        }
+        .service-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+        .service-card.selected { border-color: var(--purple); background: rgba(168, 85, 247, 0.08); }
+        .service-icon { font-size: 28px; margin-bottom: 12px; }
+        .service-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .service-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        .service-check { display: none; float: right; color: var(--purple); font-size: 18px; }
+        .service-card.selected .service-check { display: block; }
+
+        /* FORM */
+        .form-group { margin-bottom: 24px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%; padding: 14px 16px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; color: var(--text); font-family: 'Inter', sans-serif;
+            font-size: 14px; transition: border-color 0.2s; outline: none;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--purple); }
+        .form-select option { background: var(--bg-card); }
+        .form-textarea { resize: vertical; min-height: 120px; }
+
+        /* BUDGET */
+        .budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+        .budget-option {
+            background: var(--bg-card); border: 2px solid var(--border);
+            border-radius: 10px; padding: 14px; text-align: center;
+            cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 600;
+        }
+        .budget-option:hover { border-color: var(--purple); }
+        .budget-option.selected { border-color: var(--purple); background: rgba(168, 85, 247, 0.08); color: var(--purple-light); }
+
+        /* BUTTONS */
+        .btn { padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: white; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-outline:hover { border-color: var(--purple); color: var(--purple-light); }
+        .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px; }
+
+        /* RECAP */
+        .recap-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 24px; }
+        .recap-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .recap-row:last-child { border-bottom: none; }
+        .recap-label { color: var(--text-muted); }
+        .recap-value { font-weight: 600; }
+
+        /* SUCCESS */
+        .success { text-align: center; padding: 60px 0; }
+        .success-icon { font-size: 64px; margin-bottom: 24px; }
+        .success h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+        .success p { color: var(--text-muted); margin-bottom: 32px; }
+    </style>
+</head>
+<body>
+    <nav id="navbar"></nav>
+    <script src="/navbar.js"></script>
+
+    <main>
+        <h1>Demander un devis</h1>
+        <p class="subtitle">Décris ton projet et je te réponds rapidement.</p>
+
+        <!-- STEPS -->
+        <div class="steps">
+            <div class="step active" id="step1">
+                <div class="step-num">1</div>
+                <span class="step-label">Service</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step" id="step2">
+                <div class="step-num">2</div>
+                <span class="step-label">Projet</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step" id="step3">
+                <div class="step-num">3</div>
+                <span class="step-label">Récapitulatif</span>
+            </div>
+        </div>
+
+        <!-- PANEL 1 : SERVICE -->
+        <div class="panel active" id="panel1">
+            <div class="service-grid">
+                <div class="service-card" onclick="selectService(this, 'Bot de modération')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">🛡️</div>
+                    <div class="service-name">Bot de modération</div>
+                    <div class="service-desc">Kick, ban, warn, logs, anti-spam...</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Bot de gestion de serveur')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">⚙️</div>
+                    <div class="service-name">Bot de gestion</div>
+                    <div class="service-desc">Bienvenue, rôles, tickets, planning...</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Bot custom complet')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">🤖</div>
+                    <div class="service-name">Bot custom complet</div>
+                    <div class="service-desc">Tout ce que tu veux, sur mesure.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Bot économie/niveaux')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">📈</div>
+                    <div class="service-name">Bot économie/niveaux</div>
+                    <div class="service-desc">XP, niveaux, monnaie virtuelle...</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Site vitrine')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">🌐</div>
+                    <div class="service-name">Site vitrine</div>
+                    <div class="service-desc">Présentation simple et moderne.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Dashboard web')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">📊</div>
+                    <div class="service-name">Dashboard web</div>
+                    <div class="service-desc">Interface de gestion pour ton bot.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Site boutique/commandes')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">🛒</div>
+                    <div class="service-name">Site boutique</div>
+                    <div class="service-desc">Système de commandes en ligne.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Site custom complet')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">💻</div>
+                    <div class="service-name">Site custom complet</div>
+                    <div class="service-desc">Tout ce que tu veux, sur mesure.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Pack Starter')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">📦</div>
+                    <div class="service-name">Pack Starter</div>
+                    <div class="service-desc">Bot basique + site vitrine.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Pack Pro')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">🚀</div>
+                    <div class="service-name">Pack Pro</div>
+                    <div class="service-desc">Bot custom + dashboard web.</div>
+                </div>
+                <div class="service-card" onclick="selectService(this, 'Pack Premium')">
+                    <span class="service-check">✓</span>
+                    <div class="service-icon">👑</div>
+                    <div class="service-name">Pack Premium</div>
+                    <div class="service-desc">Tout inclus, support prioritaire.</div>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="goToPanel(2)" id="btn-next1" disabled>Suivant →</button>
+            </div>
+        </div>
+
+        <!-- PANEL 2 : PROJET -->
+        <div class="panel" id="panel2">
+            <div class="form-group">
+                <label class="form-label">Nom / Pseudo</label>
+                <input type="text" class="form-input" id="input-name" placeholder="Ton pseudo Discord ou ton nom">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Décris ton projet</label>
+                <textarea class="form-textarea" id="input-desc" placeholder="Explique ce que tu veux, les fonctionnalités, le style..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Budget estimé</label>
+                <div class="budget-grid">
+                    <div class="budget-option" onclick="selectBudget(this, '< 20€')">< 20€</div>
+                    <div class="budget-option" onclick="selectBudget(this, '20€ - 50€')">20€ - 50€</div>
+                    <div class="budget-option" onclick="selectBudget(this, '50€ - 100€')">50€ - 100€</div>
+                    <div class="budget-option" onclick="selectBudget(this, '100€ - 200€')">100€ - 200€</div>
+                    <div class="budget-option" onclick="selectBudget(this, '200€ - 500€')">200€ - 500€</div>
+                    <div class="budget-option" onclick="selectBudget(this, 'À discuter')">À discuter</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Délai souhaité</label>
+                <select class="form-select" id="input-delay">
+                    <option value="">Sélectionne un délai...</option>
+                    <option>Le plus tôt possible</option>
+                    <option>1 semaine</option>
+                    <option>2 semaines</option>
+                    <option>1 mois</option>
+                    <option>Pas de délai précis</option>
+                </select>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToPanel(1)">← Retour</button>
+                <button class="btn btn-primary" onclick="goToPanel(3)">Suivant →</button>
+            </div>
+        </div>
+
+        <!-- PANEL 3 : RÉCAP -->
+        <div class="panel" id="panel3">
+            <div class="recap-card">
+                <div class="recap-row">
+                    <span class="recap-label">Service</span>
+                    <span class="recap-value" id="recap-service">—</span>
+                </div>
+                <div class="recap-row">
+                    <span class="recap-label">Nom</span>
+                    <span class="recap-value" id="recap-name">—</span>
+                </div>
+                <div class="recap-row">
+                    <span class="recap-label">Description</span>
+                    <span class="recap-value" id="recap-desc" style="max-width:60%;text-align:right;">—</span>
+                </div>
+                <div class="recap-row">
+                    <span class="recap-label">Budget</span>
+                    <span class="recap-value" id="recap-budget">—</span>
+                </div>
+                <div class="recap-row">
+                    <span class="recap-label">Délai</span>
+                    <span class="recap-value" id="recap-delay">—</span>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToPanel(2)">← Retour</button>
+                <button class="btn btn-primary" onclick="submitDevis()">✅ Envoyer le devis</button>
+            </div>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="panel" id="panel-success">
+            <div class="success">
+                <div class="success-icon">🎉</div>
+                <h2>Devis envoyé !</h2>
+                <p>Je reviendrai vers toi très rapidement.<br>Tu peux suivre ton devis dans "Mes commandes".</p>
+                <a href="/commandes.html" class="btn btn-primary">📋 Voir mes commandes</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let selectedService = '';
+        let selectedBudget = '';
+
+        function selectService(el, name) {
+            document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedService = name;
+            document.getElementById('btn-next1').disabled = false;
+        }
+
+        function selectBudget(el, value) {
+            document.querySelectorAll('.budget-option').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedBudget = value;
+        }
+
+        function goToPanel(num) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel' + num).classList.add('active');
+
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById('step' + i);
+                step.classList.remove('active', 'done');
+                if (i < num) step.classList.add('done');
+                else if (i === num) step.classList.add('active');
+            }
+
+            if (num === 3) {
+                document.getElementById('recap-service').textContent = selectedService;
+                document.getElementById('recap-name').textContent = document.getElementById('input-name').value || '—';
+                document.getElementById('recap-desc').textContent = document.getElementById('input-desc').value || '—';
+                document.getElementById('recap-budget').textContent = selectedBudget || '—';
+                document.getElementById('recap-delay').textContent = document.getElementById('input-delay').value || '—';
+            }
+        }
+
+        async function submitDevis() {
+            const devis = {
+                service: selectedService,
+                nom: document.getElementById('input-name').value,
+                description: document.getElementById('input-desc').value,
+                budget: selectedBudget,
+                delai: document.getElementById('input-delay').value,
+                date: new Date().toISOString()
+            };
+
+            try {
+                const res = await fetch('/api/devis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(devis)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById('panel-success').classList.add('active');
+                } else {
+                    alert('❌ Erreur lors de l\'envoi');
+                }
+            } catch {
+                alert('❌ Erreur de connexion');
+            }
+        }
+    </script>
+</body>
+</html>

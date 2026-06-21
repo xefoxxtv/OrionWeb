@@ -10,6 +10,22 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI).then(() => console.log('✅ Dashboard connecté à MongoDB'));
 
 const { connectDB, getConfig } = require('./database.js');
+
+const devisSchema = new mongoose.Schema({
+    userId: String,
+    username: String,
+    avatar: String,
+    service: String,
+    nom: String,
+    description: String,
+    budget: String,
+    delai: String,
+    statut: { type: String, default: 'en_attente' },
+    messages: { type: Array, default: [] },
+    date: { type: Date, default: Date.now }
+});
+const Devis = mongoose.models.Devis || mongoose.model('Devis', devisSchema);
+
 connectDB();
 
 const app = express();
@@ -225,6 +241,48 @@ app.get('/admin.html', (req, res) => {
 // Page legal
 app.get('/legal.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../legal.html'));
+});
+
+// Route Devis
+app.get('/devis.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../devis.html'));
+});
+
+app.post('/api/devis', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        const devis = new Devis({
+            userId: req.session.user.id,
+            username: req.session.user.username,
+            avatar: req.session.user.avatar,
+            ...req.body
+        });
+        await devis.save();
+        res.json({ success: true, id: devis._id });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+app.get('/api/devis', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        const devisList = await Devis.find({ userId: req.session.user.id }).sort({ date: -1 });
+        res.json(devisList);
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+app.get('/api/admin/devis', async (req, res) => {
+    if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
+    try {
+        const devisList = await Devis.find().sort({ date: -1 });
+        res.json(devisList);
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
 });
 
 app.listen(process.env.PORT, () => {

@@ -97,4 +97,38 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// Animation de transition entre pages
+const transitionStyle = document.createElement('style');
+transitionStyle.textContent = `
+    body {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    body.loaded {
+        opacity: 1;
+    }
+    body.fade-out {
+        opacity: 0;
+    }
+`;
+document.head.appendChild(transitionStyle);
+
+// Fade in à l'arrivée sur la page
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+});
+
+// Fade out avant de changer de page
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link && link.href && !link.href.startsWith('#') && link.target !== '_blank' && link.href.includes(window.location.origin)) {
+        e.preventDefault();
+        document.body.classList.remove('loaded');
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = link.href;
+        }, 300);
+    }
+});
+
 initNavbar();

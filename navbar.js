@@ -102,23 +102,24 @@ const transitionStyle = document.createElement('style');
 transitionStyle.textContent = `
     body {
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transform: translateX(30px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
     body.loaded {
         opacity: 1;
+        transform: translateX(0);
     }
     body.fade-out {
         opacity: 0;
+        transform: translateX(-30px);
     }
 `;
 document.head.appendChild(transitionStyle);
 
-// Fade in à l'arrivée sur la page
 window.addEventListener('load', () => {
     document.body.classList.add('loaded');
 });
 
-// Fade out avant de changer de page
 document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
     if (link && link.href && !link.href.startsWith('#') && link.target !== '_blank' && link.href.includes(window.location.origin)) {

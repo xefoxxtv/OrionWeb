@@ -316,7 +316,9 @@
             });
         }
 
-        loadEditDevis();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadEditDevis();
+        });
 
         let selectedService = '';
         let selectedBudget = '';

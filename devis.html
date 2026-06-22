@@ -298,6 +298,7 @@
             });
 
             // Pré-sélectionne le service
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
             document.querySelectorAll('.service-card').forEach(card => {
                 if (card.getAttribute('data-service').trim() === devis.service.trim()) {
                     card.classList.add('selected');

@@ -299,7 +299,7 @@
 
             // Pré-sélectionne le service
             document.querySelectorAll('.service-card').forEach(card => {
-                if (card.getAttribute('data-service') === devis.service) {
+                if (card.getAttribute('data-service').trim() === devis.service.trim()) {
                     card.classList.add('selected');
                     selectedService = devis.service;
                     document.getElementById('btn-next1').disabled = false;

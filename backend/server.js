@@ -343,6 +343,31 @@ app.post('/api/admin/devis/:id/message', async (req, res) => {
     }
 });
 
+// Route ??
+app.get('/api/devis/:id', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        if (!devis || devis.userId !== req.session.user.id) return res.status(403).json({ error: 'Accès refusé' });
+        res.json(devis);
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+app.put('/api/devis/:id', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        if (!devis || devis.userId !== req.session.user.id) return res.status(403).json({ error: 'Accès refusé' });
+        if (devis.statut !== 'en_attente') return res.status(400).json({ error: 'Impossible de modifier une commande en cours' });
+        await Devis.findByIdAndUpdate(req.params.id, req.body);
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

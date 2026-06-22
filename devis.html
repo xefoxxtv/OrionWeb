@@ -292,6 +292,10 @@
             const devis = await res.json();
 
             if (devis.error) return;
+            console.log('Service du devis:', devis.service);
+            document.querySelectorAll('.service-card').forEach(card => {
+                console.log('Data-service de la carte:', card.getAttribute('data-service'));
+            });
 
             // Pré-sélectionne le service
             document.querySelectorAll('.service-card').forEach(card => {

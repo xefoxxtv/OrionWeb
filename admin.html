@@ -268,7 +268,7 @@
             `;
         }
 
-        function openDevisModal(devis) {
+        async function openDevisModal(devis) {
             currentDevisAdmin = devis;
             document.getElementById('admin-modal-title').textContent = devis.service + ' — ' + devis.username;
             document.getElementById('admin-modal-content').innerHTML = `
@@ -281,7 +281,11 @@
                 ${devis.motif ? '<div class="motif-refuse" style="margin-top:12px;">❌ Motif de refus : ' + devis.motif + '</div>' : ''}
             `;
 
-            const messages = devis.messages || [];
+            // Recharge les messages depuis l'API
+            const res = await fetch('/api/admin/devis/' + devis._id + '/messages', { credentials: 'include' });
+            const data = await res.json();
+            const messages = data.messages || [];
+
             const msgList = document.getElementById('admin-message-list');
             msgList.innerHTML = messages.length === 0
                 ? '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">Aucun message.</p>'

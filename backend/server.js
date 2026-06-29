@@ -397,6 +397,17 @@ app.put('/api/devis/:id', async (req, res) => {
     }
 });
 
+// Route ?? 
+app.get('/api/admin/devis/:id/messages', async (req, res) => {
+    if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        res.json({ messages: devis.messages || [] });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

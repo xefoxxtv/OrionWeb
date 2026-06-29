@@ -152,6 +152,11 @@
 
         function openModal(devis) {
             currentDevis = devis;
+    
+            // Marque comme lu
+            if (devis.nonLu) {
+                fetch('/api/devis/' + devis._id + '/lu', { method: 'POST', credentials: 'include' });
+            }            
             document.getElementById('modal-title').textContent = devis.service;
 
             let motifHtml = '';

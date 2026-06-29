@@ -8,7 +8,19 @@ async function initNavbar() {
         const res = await fetch(BACKEND + '/api/me', { credentials: 'include' });
         const data = await res.json();
         if (!data.error) user = data.user;
-    } catch {}
+        } catch {}
+
+        // Vérifie les notifications
+        let notifCount = 0;
+        if (user) {
+            try {
+                const notifRes = await fetch('/api/devis', { credentials: 'include' });
+                const devisList = await notifRes.json();
+                if (!devisList.error) {
+                    notifCount = devisList.filter(d => d.nonLu).length;
+                }
+            } catch {}
+        }
 
     const isAdmin = user && user.id === ADMIN_ID;
 
@@ -41,7 +53,7 @@ async function initNavbar() {
                     <div class="profile-dropdown" id="profile-dropdown">
                         <a href="/dashboard.html" class="dropdown-item">📊 Dashboard</a>
                         <a href="/devis.html" class="dropdown-item">📝 Demander un devis</a>
-                        <a href="/commandes.html" class="dropdown-item">📋 Mes commandes</a>
+                        <a href="/commandes.html" class="dropdown-item">📋 Mes commandes ${notifCount > 0 ? '<span style="background:#ef4444;color:white;border-radius:50%;padding:2px 7px;font-size:11px;margin-left:6px;">' + notifCount + '</span>' : ''}</a>
                         ${isAdmin ? '<a href="/admin.html" class="dropdown-item admin-item">👑 Panel Admin</a>' : ''}
                         <div class="dropdown-divider"></div>
                         <a href="/auth/logout" class="dropdown-item logout-item">🚪 Déconnexion</a>

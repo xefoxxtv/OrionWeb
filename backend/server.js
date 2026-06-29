@@ -22,6 +22,8 @@ const devisSchema = new mongoose.Schema({
     delai: String,
     statut: { type: String, default: 'en_attente' },
     messages: { type: Array, default: [] },
+    motif: String,
+    nonLu: { type: Boolean, default: false },
     date: { type: Date, default: Date.now }
 });
 const Devis = mongoose.models.Devis || mongoose.model('Devis', devisSchema);
@@ -31,7 +33,7 @@ connectDB();
 // Suppression automatique des commandes terminées après 3 mois
 async function cleanOldDevis() {
     const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 0);
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
     await Devis.deleteMany({ 
         statut: 'termine', 
         date: { $lt: threeMonthsAgo } 
@@ -352,6 +354,30 @@ app.post('/api/admin/devis/:id/message', async (req, res) => {
         const devis = await Devis.findById(req.params.id);
         devis.messages.push({ role: 'admin', text: req.body.text, date: new Date() });
         await devis.save();
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+app.post('/api/admin/devis/:id/message', async (req, res) => {
+    if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
+    try {
+        const devis = await Devis.findById(req.params.id);
+        devis.messages.push({ role: 'admin', text: req.body.text, date: new Date() });
+        devis.nonLu = true;
+        await devis.save();
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+//Route pour marquer comme lu 
+app.post('/api/devis/:id/lu', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    try {
+        await Devis.findByIdAndUpdate(req.params.id, { nonLu: false });
         res.json({ success: true });
     } catch (e) {
         res.status(500).json({ error: 'Erreur serveur' });

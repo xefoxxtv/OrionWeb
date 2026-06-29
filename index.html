@@ -578,12 +578,12 @@
             <div class="stat-label">Membres gérés</div>
         </div>
         <div class="stat">
-            <div class="stat-number" id="stat-commandes">...</div>
-            <div class="stat-label">Commandes reçues</div>
+            <div class="stat-number">25+</div>
+            <div class="stat-label">Commandes slash</div>
         </div>
         <div class="stat">
-            <div class="stat-number">99%</div>
-            <div class="stat-label">Uptime</div>
+            <div class="stat-number" id="stat-statut">...</div>
+            <div class="stat-label">Statut</div>
         </div>
     </div>
 
@@ -721,12 +721,14 @@
             const data = await res.json();
             document.getElementById('stat-serveurs').textContent = data.serveurs + '+';
             document.getElementById('stat-membres').textContent = data.membres ? data.membres.toLocaleString('fr-FR') + '+' : '0+';
-            document.getElementById('stat-commandes').textContent = data.commandes + '+';
-        } catch {}
+            document.getElementById('stat-statut').innerHTML = data.serveurs > 0 ? '🟢 En ligne' : '🔴 Hors ligne';
+        } catch {
+            document.getElementById('stat-statut').innerHTML = '🔴 Hors ligne';
+        }
     }
 
     loadStats();
-    setInterval(loadStats, 2 * 60 * 1000); // Toutes les 2 minutes
+    setInterval(loadStats, 2 * 60 * 1000);
     </script>
 
 </body>

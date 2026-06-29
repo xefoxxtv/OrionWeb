@@ -46,7 +46,10 @@ async function initNavbar() {
             ${user ? `
                 <div class="profile-menu">
                     <div class="profile-trigger" onclick="toggleMenu()">
-                        <img class="profile-avatar" src="${user.avatar ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
+                        <div style="position:relative;display:inline-block;">
+                            <img class="profile-avatar" src="${user.avatar ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="">
+                            ${notifCount > 0 ? '<span style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);">' + notifCount + '</span>' : ''}
+                        </div>
                         <span class="profile-name">${user.username}</span>
                         <span class="profile-arrow">▾</span>
                     </div>

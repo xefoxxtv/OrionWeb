@@ -153,10 +153,14 @@
         function openModal(devis) {
             currentDevis = devis;
     
-            // Marque comme lu
+            // Marque comme lu et enlève le badge en direct
             if (devis.nonLu) {
                 fetch('/api/devis/' + devis._id + '/lu', { method: 'POST', credentials: 'include' });
-            }            
+    
+                // Enlève le badge rouge en direct
+                const badge = document.querySelector('.profile-trigger span[style*="background:#ef4444"]');
+                if (badge) badge.remove();
+            }           
             document.getElementById('modal-title').textContent = devis.service;
 
             let motifHtml = '';

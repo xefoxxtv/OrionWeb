@@ -408,6 +408,30 @@ app.get('/api/admin/devis/:id/messages', async (req, res) => {
     }
 });
 
+// Route Stats réel
+app.get('/api/stats', async (req, res) => {
+    try {
+        const devisCount = await Devis.countDocuments();
+        
+        // Récupère les infos du bot via Discord API
+        const botRes = await axios.get('https://discord.com/api/users/@me', {
+            headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
+        });
+
+        // Compte les serveurs via l'API Discord
+        const guildsRes = await axios.get('https://discord.com/api/users/@me/guilds', {
+            headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
+        });
+
+        res.json({
+            serveurs: guildsRes.data.length,
+            commandes: devisCount,
+        });
+    } catch (e) {
+        res.json({ serveurs: 0, commandes: 0 });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log('Backend OrionBot lancé sur le port ' + process.env.PORT);
 });

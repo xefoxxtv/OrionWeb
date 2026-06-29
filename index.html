@@ -570,16 +570,16 @@
     <!-- STATS -->
     <div class="stats">
         <div class="stat">
-            <div class="stat-number">10+</div>
+            <div class="stat-number" id="stat-serveurs">...</div>
             <div class="stat-label">Serveurs</div>
         </div>
         <div class="stat">
-            <div class="stat-number">500+</div>
+            <div class="stat-number" id="stat-membres">500+</div>
             <div class="stat-label">Membres gérés</div>
         </div>
         <div class="stat">
-            <div class="stat-number">20+</div>
-            <div class="stat-label">Commandes</div>
+            <div class="stat-number" id="stat-commandes">...</div>
+            <div class="stat-label">Commandes reçues</div>
         </div>
         <div class="stat">
             <div class="stat-number">99%</div>
@@ -704,6 +704,15 @@
             </div>
         </div>
     </footer>
+
+    <script>
+    fetch('/api/stats')
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('stat-serveurs').textContent = data.serveurs + '+';
+            document.getElementById('stat-commandes').textContent = data.commandes + '+';
+        });
+    </script>
 
 </body>
 </html>

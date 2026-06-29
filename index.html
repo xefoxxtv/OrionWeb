@@ -574,7 +574,7 @@
             <div class="stat-label">Serveurs</div>
         </div>
         <div class="stat">
-            <div class="stat-number" id="stat-membres">500+</div>
+            <div class="stat-number" id="stat-membres">...</div>
             <div class="stat-label">Membres gérés</div>
         </div>
         <div class="stat">
@@ -712,6 +712,21 @@
             document.getElementById('stat-serveurs').textContent = data.serveurs + '+';
             document.getElementById('stat-commandes').textContent = data.commandes + '+';
         });
+    </script>
+
+    <script>
+    async function loadStats() {
+        try {
+            const res = await fetch('/api/stats');
+            const data = await res.json();
+            document.getElementById('stat-serveurs').textContent = data.serveurs + '+';
+            document.getElementById('stat-membres').textContent = data.membres ? data.membres.toLocaleString('fr-FR') + '+' : '0+';
+            document.getElementById('stat-commandes').textContent = data.commandes + '+';
+        } catch {}
+    }
+
+    loadStats();
+    setInterval(loadStats, 2 * 60 * 1000); // Toutes les 2 minutes
     </script>
 
 </body>

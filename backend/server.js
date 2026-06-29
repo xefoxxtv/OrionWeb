@@ -412,23 +412,17 @@ app.get('/api/admin/devis/:id/messages', async (req, res) => {
 app.get('/api/stats', async (req, res) => {
     try {
         const devisCount = await Devis.countDocuments();
-        
-        // Récupère les infos du bot via Discord API
-        const botRes = await axios.get('https://discord.com/api/users/@me', {
-            headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
-        });
-
-        // Compte les serveurs via l'API Discord
-        const guildsRes = await axios.get('https://discord.com/api/users/@me/guilds', {
-            headers: { Authorization: 'Bot ' + process.env.BOT_TOKEN }
-        });
+        const botRes = await axios.get('https://orionbot-2.onrender.com/stats');
+        const botStats = botRes.data;
 
         res.json({
-            serveurs: guildsRes.data.length,
+            serveurs: botStats.serveurs,
+            membres: botStats.membres,
             commandes: devisCount,
+            uptime: botStats.uptime
         });
     } catch (e) {
-        res.json({ serveurs: 0, commandes: 0 });
+        res.json({ serveurs: 0, membres: 0, commandes: 0, uptime: 0 });
     }
 });
 

@@ -28,6 +28,21 @@ const Devis = mongoose.models.Devis || mongoose.model('Devis', devisSchema);
 
 connectDB();
 
+// Suppression automatique des commandes terminées après 3 mois
+async function cleanOldDevis() {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 0);
+    await Devis.deleteMany({ 
+        statut: 'termine', 
+        date: { $lt: threeMonthsAgo } 
+    });
+    console.log('✅ Nettoyage des vieux devis effectué');
+}
+
+// Lance le nettoyage une fois par jour
+cleanOldDevis();
+setInterval(cleanOldDevis, 24 * 60 * 60 * 1000);
+
 const app = express();
 
 app.set('trust proxy', 1);

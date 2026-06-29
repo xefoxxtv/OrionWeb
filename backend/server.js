@@ -351,22 +351,10 @@ app.delete('/api/devis/:id', async (req, res) => {
 app.post('/api/admin/devis/:id/message', async (req, res) => {
     if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
     try {
-        const devis = await Devis.findById(req.params.id);
-        devis.messages.push({ role: 'admin', text: req.body.text, date: new Date() });
-        await devis.save();
-        res.json({ success: true });
-    } catch (e) {
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
-});
-
-app.post('/api/admin/devis/:id/message', async (req, res) => {
-    if (!req.session.user || req.session.user.id !== '1368991214359150754') return res.status(403).json({ error: 'Accès refusé' });
-    try {
-        const devis = await Devis.findById(req.params.id);
-        devis.messages.push({ role: 'admin', text: req.body.text, date: new Date() });
-        devis.nonLu = true;
-        await devis.save();
+        await Devis.findByIdAndUpdate(req.params.id, {
+            $push: { messages: { role: 'admin', text: req.body.text, date: new Date() } },
+            $set: { nonLu: true }
+        });
         res.json({ success: true });
     } catch (e) {
         res.status(500).json({ error: 'Erreur serveur' });
